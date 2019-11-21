@@ -38,3 +38,15 @@ for(origin in 1:3){
 # Assuming alpha = c(1/3, 1/3, 1/3, 0, 0), the answer is:
 alpha <- c(rep(1/3, 3),0,0)
 P[2,4] * P[3,2] * (alpha %*% P)[3]
+
+# Question d ----
+# We obtain the limiting distribution like in Dobrow 3.11
+Q <- P[1:3,1:3]
+R <- P[1:3,4:5]
+# Lim P-> infty = (I-Q)^-1 * R
+limit <- solve(diag(nrow(Q))-Q) %*% R
+# The proportion of visits ending in a conversion (4) is:
+sum(limit[,1])/sum(limit)
+# This is not the same as the limiting distribution for the conversion state. First of all, the 
+# conversion proportion is a number and the limiting distribution is a vector that tells us for each
+# starting state what proportion ends in conversion.
