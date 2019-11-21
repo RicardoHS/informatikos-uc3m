@@ -1,2 +1,2 @@
 # informatikos-uc3m
-Our pretty private repo. 
+Our pretty ~private~ public repo. 
