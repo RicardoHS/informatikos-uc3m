@@ -1,7 +1,7 @@
 library(tidyverse)
 load("data/CustomerJourney_Group_2.RData")
 
-# Question 2 ----
+# Question b ----
 # See the state space of our dataset
 (state_space <- (unique(flatten_chr(CJ))))
 states <- 1:length(state_space)
