@@ -49,12 +49,12 @@ legend_colours <- character(nrow(pokemon_sample))
 legend_colours[] <- "deepskyblue2"
 legend_colours[pokemon_sample$poke1_Legendary == 1] <- "red"
 
-pairs(pokemon_sample[1:10],col=legend_colours)
+pairs(pokemon_sample[c(3:8, 13:18)], col=legend_colours)
 parcoord(pokemon_sample, col=legend_colours,var.label=TRUE)
 
-andrewsplot(as.matrix(pokemon_sample[, 1:10]),as.factor(pokemon_sample$poke1_Legendary),style="cart")
+andrewsplot(as.matrix(pokemon_sample),as.factor(pokemon_sample$poke1_Legendary),style="cart")
 
-cor <- cor(pokemon_sample[2:22])
+cor <- cor(pokemon_sample)
 corrplot(cor, method="circle")
 
 ggpairs(pokemon_sample, aes(colour = as.factor(poke1_Legendary)))
