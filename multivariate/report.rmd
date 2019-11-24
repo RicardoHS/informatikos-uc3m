@@ -13,7 +13,14 @@ output:
 ---
 
 # Part 1 - Pre-process the data set for practical analysis.
-The data is preprocesed 
+The only columns with missing values is the `poke1_Type.2` and `poke2_Type.2`. These missing values are not real missing values. 
+An empty value in this field means that pokemon has not a second type. Knowing this, we treat that empty value as a new category.
+
+Regarding the rest of the dataset, there are no missing values.
+
+Because we know the inner structure of the dataset
+
+In order to check if there are outlier
 
 # Part 2 - Perform a descriptive analysis of the pre-processed data set and obtain interesting conclusions from the analysis.
 [Insert conclusions here]
