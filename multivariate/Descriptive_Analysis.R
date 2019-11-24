@@ -1,6 +1,8 @@
 library(plotly)
 library(tidyverse)
 library(MASS)
+library("pracma")
+library(corrplot)
 
 
 data <- read.csv("pokemon.csv")
@@ -48,3 +50,8 @@ legend_colours[pokemon_sample$poke1_Legendary == 1] <- "red"
 
 pairs(pokemon_sample[2:11],col=legend_colours)
 parcoord(pokemon_sample, col=legend_colours,var.label=TRUE)
+
+andrewsplot(as.matrix(pokemon_sample[, 2:10]),as.factor(pokemon_sample$poke1_Legendary),style="cart")
+
+cor <- cor(pokemon_sample[2:22])
+corrplot(cor, method="circle")
