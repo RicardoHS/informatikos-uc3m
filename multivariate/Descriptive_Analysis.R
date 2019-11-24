@@ -2,6 +2,7 @@ library(plotly)
 library(tidyverse)
 library(MASS)
 
+
 data <- read.csv("Pokemon.csv")
 
 
@@ -12,7 +13,6 @@ encode_labels <- function() {
   
   encoded_types <- as.numeric(as.factor(types))
   variables <- c("poke1_Type.1", "poke1_Type.2", "poke2_Type.1", "poke2_Type.2")
-  
   
   for (variable in variables){
     data[[variable]] <- as.character(data[[variable]])
