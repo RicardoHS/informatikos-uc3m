@@ -1,7 +1,6 @@
 library(plotly)
 library(tidyverse)
-library(MAss)
-
+library(MASS)
 
 data <- read.csv("Pokemon.csv")
 
@@ -36,12 +35,11 @@ encode_labels <- function() {
 data <- encode_labels()
 
 
+# Legendaries do not seem to be Outliers
 legendaries <- data[data$poke1_Legendary == 1 | data$poke2_Legendary == 1,]
 
 # Reduce Data for plots
 pokemon_sample <- sample_n(data, 1000)
-
-pairs(pokemon_sample[2:11],col="deepskyblue2")
 
 #Legendary Colour Red
 legend_colours <- character(nrow(pokemon_sample))
@@ -49,3 +47,4 @@ legend_colours[] <- "deepskyblue2"
 legend_colours[pokemon_sample$poke1_Legendary == 1] <- "red"
 
 pairs(pokemon_sample[2:11],col=legend_colours)
+parcoord(pokemon_sample, col=legend_colours,var.label=TRUE)
