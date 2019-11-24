@@ -3,7 +3,7 @@ library(tidyverse)
 library(MASS)
 
 
-data <- read.csv("Pokemon.csv")
+data <- read.csv("pokemon.csv")
 
 
 encode_labels <- function() {
