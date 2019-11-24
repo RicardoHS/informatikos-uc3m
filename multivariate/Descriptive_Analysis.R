@@ -57,5 +57,5 @@ andrewsplot(as.matrix(pokemon_sample[, 1:10]),as.factor(pokemon_sample$poke1_Leg
 cor <- cor(pokemon_sample[2:22])
 corrplot(cor, method="circle")
 
-plotmatrix()
+ggpairs(pokemon_sample, aes(colour = as.factor(poke1_Legendary)))
 
