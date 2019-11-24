@@ -1,0 +1,14 @@
+---
+title: "Statistics for Data Science - UC3M Master"
+subtitle: "Multivariate Analysis - First Assignment"
+author: 
+  - "Ricardo Hortelano"
+  - "Javier Martinez"
+  - "Santiago Raposo"
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage{bm}
+output:
+  pdf_document
+---
+
