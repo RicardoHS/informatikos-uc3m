@@ -12,3 +12,8 @@ output:
   pdf_document
 ---
 
+# Part 1 - Pre-process the data set for practical analysis.
+The data is preprocesed 
+
+# Part 2 - Perform a descriptive analysis of the pre-processed data set and obtain interesting conclusions from the analysis.
+[Insert conclusions here]
