@@ -30,7 +30,7 @@ encode_labels <- function() {
   data$poke1_Legendary <- ifelse(data$poke1_Legendary == "True",1, 0)
   data$poke2_Legendary <- ifelse(data$poke2_Legendary == "True",1, 0)
   
-  data
+  data[, -c(1,2,13)]
 }
 
 
@@ -48,10 +48,10 @@ legend_colours <- character(nrow(pokemon_sample))
 legend_colours[] <- "deepskyblue2"
 legend_colours[pokemon_sample$poke1_Legendary == 1] <- "red"
 
-pairs(pokemon_sample[2:11],col=legend_colours)
+pairs(pokemon_sample[1:10],col=legend_colours)
 parcoord(pokemon_sample, col=legend_colours,var.label=TRUE)
 
-andrewsplot(as.matrix(pokemon_sample[, 2:10]),as.factor(pokemon_sample$poke1_Legendary),style="cart")
+andrewsplot(as.matrix(pokemon_sample[, 1:10]),as.factor(pokemon_sample$poke1_Legendary),style="cart")
 
 cor <- cor(pokemon_sample[2:22])
 corrplot(cor, method="circle")
