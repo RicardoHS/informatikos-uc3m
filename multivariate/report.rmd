@@ -13,7 +13,9 @@ output:
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      comment = NA)
+                      comment = NA,
+                      dev = 'png',
+                      dpi = 300)
 library(plotly)
 library(tidyverse)
 library(MASS)
