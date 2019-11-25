@@ -51,7 +51,7 @@ Given the Markov Chain problem previously defined, where $w_i^n$ is the expectat
 Since $W_i^n$ and $W_i^{n-1}$ follow the same distribution, then
 
 $$
-\mathbb{E}[W_i] = \mathbb{E}[\mathbb{E}[W_i^n | W_i^{n-1}]]
+\mathbb{E}[W_i^n] = \mathbb{E}[\mathbb{E}[W_i^n | W_i^{n-1}]]
 $$
 
 
