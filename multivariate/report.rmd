@@ -89,7 +89,7 @@ p_values <- 1 - pchisq(mah_poke, p)
 sort_index <- order(p_values)
 outliers_index <- sort_index[which(p_values[sort_index] < ((1:n)/n*0.01))]
 
-head(poke_long[outliers_index, ])
+poke_long[outliers_index, ] %>% distinct(Name, .keep_all = T)
 ```
 
 As there are indeed some outliers, we can try to compute the Mahalanobis distance again using the robust estimators for the sample covariance matrix.
@@ -107,7 +107,7 @@ sort_index_robust <- order(p_values_robust)
 outliers_index_robust <- 
   sort_index_robust[which(p_values_robust[sort_index_robust] < ((1:n)/n*0.01))]
 
-head(poke_long[outliers_index, ])
+poke_long[outliers_index, ] %>% distinct(Name, .keep_all = T)
 # Outlier Pokemon
 unique(poke_long[outliers_index, ]$Name)
 ```
