@@ -54,6 +54,6 @@ $$
 \mathbb{E}[W_i^n] = \mathbb{E}[\mathbb{E}[W_i^n | W_i^{n-1}]]
 $$
 
-
+**¯\\_(ツ)_/¯**
 
 
