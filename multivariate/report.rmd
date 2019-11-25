@@ -11,6 +11,25 @@ header-includes:
 output:
   pdf_document
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = NA)
+library(plotly)
+library(tidyverse)
+library(MASS)
+library(pracma)
+library(corrplot)
+library(GGally)
+
+poke <- read_csv("data/pokemon.csv")[,-1]
+poke_long <- poke %>%
+  dplyr::select(-target) %>%
+  pivot_longer(
+    everything(),
+    names_to = c("fight", ".value"),
+    names_sep = "_"
+  )
+```
 
 # Part 1 - Pre-process the data set for practical analysis.
 The only columns with missing values is the `poke1_Type.2` and `poke2_Type.2`. These missing values are not real missing values. 
@@ -18,9 +37,17 @@ An empty value in this field means that pokemon has not a second type. Knowing t
 
 Regarding the rest of the dataset, there are no missing values.
 
-Because we know the inner structure of the dataset
+As we have some knowledge of the structure of our dataset, we might wonder if pokemons which are labeled as `Legendary` are outliers in the distribution of their statistics. We can check this using a parallel coordinates plot.
+```{r, cache=TRUE, dependson=setup, message = F}
+numeric_vars <- poke_long %>% 
+  dplyr::select(-number) %>% 
+  select_if(~is.numeric(.) || is.logical(.))
+# Take a sample of size = 1000 for plots
+numeric_sample <- numeric_vars[sample(nrow(numeric_vars)), ][1:1e3,]
+ggpairs(numeric_sample, aes(color = Legendary))
+```
 
-In order to check if there are outlier
+In order to check if there are any outliers in our variables, we will
 
 # Part 2 - Perform a descriptive analysis of the pre-processed data set and obtain interesting conclusions from the analysis.
 [Insert conclusions here]
