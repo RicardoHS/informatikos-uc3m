@@ -22,8 +22,13 @@ library(MASS)
 library(pracma)
 library(corrplot)
 library(GGally)
+library(robustbase)
+```
 
-poke <- read_csv("data/pokemon.csv")[,-1]
+```{r poke, include = FALSE, cache = TRUE}
+poke <- read_csv("data/pokemon.csv")[,-1] %>% 
+  mutate_at(vars(contains("number"), "target", contains("Generation")), as.factor)
+
 poke_long <- poke %>%
   dplyr::select(-target) %>%
   pivot_longer(
