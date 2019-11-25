@@ -9,7 +9,7 @@ Let the total number of particles present on area $j$ on day $n$ be a random var
 Then, the expected total number of particles transited to area $j$ will be given by 
 
 $$
-\mathbb{E}[B_{ij}^{n}] = \sum_i q_{ij}W_i^{n-1}
+\mathbb{E}[B_{ij}^{n}] = \sum_i q_{ij}\mathbb{E}[W_i^{n-1}]
 $$
 
 Or the total particles on area $i$ weighted with the probability of transition to area $j$. Therefore, this can be reformulated as the success that a particle transits from area $i$ to area $j$. Such that
@@ -27,7 +27,7 @@ $$
 Being the expected number of particles on day $n$
 
 $$
-\mathbb{E}[W_j^n] = \mathbb{E}[U_j] + \sum_i q_{ij}W_i^{n-1}
+\mathbb{E}[W_j^n] = \mathbb{E}[U_j] + \sum_i q_{ij}\mathbb{E}[W_i^{n-1}]
 $$
 
 ## 2B
