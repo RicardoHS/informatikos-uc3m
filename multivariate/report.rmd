@@ -60,7 +60,8 @@ poke_long %>%
   ) %>% 
   ggplot(aes(x = Statistic, y = Value))+
   geom_boxplot()+
-  coord_flip()
+  coord_flip()+
+  theme_bw()
 ```
 As we can see, there are some extreme cases atending to the boxplot. Nevertheless we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
 
@@ -115,5 +116,10 @@ But indeed we get the same 3 pokemon showing up as outliers: `Chansey`, `Blissey
 
 We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses. This also does reinforce the fact that legendary pokemon are not outliers, as neither `Chansey`, `Blissey` nor `Shuckle` is legendary.
 
-# Part 2 - Perform a descriptive analysis of the pre-processed data set and obtain interesting conclusions from the analysis.
-[Insert conclusions here]
+Finally, just to further confirm that legendary pokemon have higher values for their statistics, we can observe the difference in a parallel coordinates plot.
+```{r, fig.height = 3, cache = T, dependson = "poke"}
+ggparcoord(numeric_sample, groupColumn = "Legendary")+
+  theme_bw()
+```
+
+So we can see that even though legendary pokemon have generally higher values for their statistics, the actual "outliers" are not legendary pokemon. The high values we see in this plot for `HP`, `Def` and `Sp.Def` are the pokemon we previously found to be outliers, `Chansey`, `Blissey` and `Shuckle`.
