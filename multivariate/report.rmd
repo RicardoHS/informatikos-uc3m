@@ -42,13 +42,12 @@ poke_long <- poke %>%
 # Part 1 - Pre-process the data set for practical analysis.
 
 ## Missing Values
-The only columns with missing values is the `poke1_Type.2` and `poke2_Type.2`. These missing values are not real missing values. 
-An empty value in this field means that pokemon has not a second type. Knowing this, we treat that empty value as a new category.
+The only variables with missing values are `poke1_Type.2` and `poke2_Type.2`. Although these values do not exist, they are not considered as actual missing values. Any given pokemon can have up to two types, the second being optional. Therefore, the absence of this second type is treated, not as unrecorded data, but as a type in itself.
 
 Regarding the rest of the dataset, there are no missing values.
 
 ## Distribution of Statistics and Outliers
-For some of our plots, we are only interested in the distribution of the variables of the pokemons. Since there are two pokemons per row of our dataset, we have joined the distributions of each of the variables in the dataset `poke_long`. After restructuring the dataset in this way, we can see a box plot of the variables so that we can get a rough idea of their distribution.
+For some of our plots, we are only interested in the distribution of the variables of the pokemons. Since each observation of our dataset is composed of two pokemon, we have joined the distributions of each of their variables in the dataset `poke_long`. After restructuring the dataset in this way, we can see a box plot of the variables so that we can get a rough idea of their distribution.
 
 ```{r, cache = TRUE, dependson="poke"}
 poke_long %>% 
@@ -63,9 +62,9 @@ poke_long %>%
   coord_flip()+
   theme_bw()
 ```
-As we can see, there are some extreme cases atending to the boxplot. Nevertheless we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
+As we can see, there are some extreme cases atending to the boxplot. Nevertheless, we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
 
-Regarding the fact that we have some knowledge of the structure of our dataset, we might wonder if pokemons which are labeled as `Legendary` are outliers in the distribution of their statistics. We can check this using a pairplot.
+Based on our prior knowledge of dataset and its structure, we might wonder whether pokemons labeled as `Legendary` are outliers in the distribution of their statistics. We can check this using a pairplot.
 ```{r, cache=TRUE, dependson="poke", message = F}
 numeric_vars <- poke_long %>% 
   select_if(~is.numeric(.) || is.logical(.))
@@ -73,9 +72,9 @@ numeric_vars <- poke_long %>%
 numeric_sample <- numeric_vars[sample(nrow(numeric_vars)), ][1:1e3,]
 ggpairs(numeric_vars, aes(color = Legendary))
 ```
-As we can observe, the legendary pokemons have larger values in the variables. This is a good indicative that the legendary pokemons can be outliers.
+As we can observe, the legendary pokemons have larger values in the variables. This is a good indicative that the legendary pokemons could be outliers.
 
-In order to check if these pokemons are outliers or if there can be any other type of outliers in our variables, we employ the False Discovery Rate method. First, we calculate the Mahalanobis distance for the numeric variables in our dataset.
+In order to check whether these pokemons are actually outliers or if there could be any other type of outliers in our variables, we employ the False Discovery Rate method. First, we calculate the Mahalanobis distance for the numeric variables in our dataset.
 ```{r}
 n <- nrow(poke)
 p <- ncol(poke)
@@ -114,7 +113,7 @@ unique(poke_long[outliers_index, ]$Name)
 ```
 But indeed we get the same 3 pokemon showing up as outliers: `Chansey`, `Blissey` and `Shuckle`. The reason these 3 show up as outliers is their extreme values of `HP` (for `Chansey` and `Blissey`) and `Defense` and `Sp.Def` (for `Shuckle`).
 
-We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses. This also does reinforce the fact that legendary pokemon are not outliers, as neither `Chansey`, `Blissey` nor `Shuckle` is legendary.
+We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses. This also reinforces the fact that legendary pokemon are not outliers, as neither `Chansey`, `Blissey` nor `Shuckle` are legendary.
 
 Finally, just to further confirm that legendary pokemon have higher values for their statistics, we can observe the difference in a parallel coordinates plot.
 ```{r, fig.height = 3, cache = T, dependson = "poke"}
@@ -122,4 +121,4 @@ ggparcoord(numeric_sample, groupColumn = "Legendary")+
   theme_bw()
 ```
 
-So we can see that even though legendary pokemon have generally higher values for their statistics, the actual "outliers" are not legendary pokemon. The high values we see in this plot for `HP`, `Def` and `Sp.Def` are the pokemon we previously found to be outliers, `Chansey`, `Blissey` and `Shuckle`.
+Therefore, we can see that even though legendary pokemon have generally higher values for their statistics, the actual "outliers" are not legendary pokemon. The high values we see in this plot for `HP`, `Def` and `Sp.Def` are the pokemon we previously found to be outliers, `Chansey`, `Blissey` and `Shuckle`.
