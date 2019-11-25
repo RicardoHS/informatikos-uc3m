@@ -62,8 +62,9 @@ poke_long %>%
   geom_boxplot()+
   coord_flip()
 ```
+As we can see, there are some extreme cases atending to the boxplot. Nevertheless we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
 
-As we have some knowledge of the structure of our dataset, we might wonder if pokemons which are labeled as `Legendary` are outliers in the distribution of their statistics. We can check this using a parallel coordinates plot.
+Regarding the fact that we have some knowledge of the structure of our dataset, we might wonder if pokemons which are labeled as `Legendary` are outliers in the distribution of their statistics. We can check this using a pairplot.
 ```{r, cache=TRUE, dependson="poke", message = F}
 numeric_vars <- poke_long %>% 
   select_if(~is.numeric(.) || is.logical(.))
@@ -71,8 +72,9 @@ numeric_vars <- poke_long %>%
 numeric_sample <- numeric_vars[sample(nrow(numeric_vars)), ][1:1e3,]
 ggpairs(numeric_vars, aes(color = Legendary))
 ```
+As we can observe, the legendary pokemons have larger values in the variables. This is a good indicative that the legendary pokemons can be outliers.
 
-In order to check if there are any outliers in our variables, we employ the False Discovery Rate method. First, we calculate the Mahalanobis distance for the numeric variables in our dataset.
+In order to check if these pokemons are outliers or if there can be any other type of outliers in our variables, we employ the False Discovery Rate method. First, we calculate the Mahalanobis distance for the numeric variables in our dataset.
 ```{r}
 n <- nrow(poke)
 p <- ncol(poke)
@@ -81,8 +83,7 @@ poke_x <- poke_long %>%
 mah_poke <- mahalanobis(poke_x, colMeans(poke_x), cov(poke_x))
 plot(sort(mah_poke), main = "Mahalanobis Distance", xlab = "", ylab = "")
 ```
-
-Now we can compute the outliers using the $\chi^2$ distribution:
+The extreme cases in the right side can be outliers. In order to check that, we can compute the outliers using the $\chi^2$ distribution test:
 ```{r}
 p_values <- 1 - pchisq(mah_poke, p)
 sort_index <- order(p_values)
