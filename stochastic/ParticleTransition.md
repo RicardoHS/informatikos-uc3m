@@ -1,6 +1,6 @@
-
-
 ## Stochastic Madrid Particles
+
+## 2A
 
 Let  $\sum_j q_{ij} $ be the probability of particle transtition from $i$ to other areas and $q_i$ the particles escaping to the atmosphere, where $\sum_j q_{ij} + q_i = 1$.  So that the total transition of particles to area $j$ is given by $\sum_i q_{ij}$. 
 
@@ -30,6 +30,30 @@ $$
 \mathbb{E}[W_j^n] = \mathbb{E}[U_j] + \sum_i q_{ij}W_i^{n-1}
 $$
 
+## 2B
+
+> Give an expression of $\textbf w^n = (w_i^n)_i$ in terms of $\mathbf w^{n+1} = (w_i^{n-1})_i$  by means of the law of total expectation
 
 
 
+Let $X$ be a random variable and let $A_1, \dots, A_k$ be a sequence of events that partition the sample space. Then, 
+
+$$
+\mathbb{E}[X] = \sum \mathbb{E}[X|A_i]P(A_i)
+$$
+
+In the same way, let $Y$ be any random variable on the same probability space than $X$. Then,
+
+$$
+\mathbb{E}[X] = \mathbb{E}[\mathbb{E}[X|Y]]
+$$
+
+Given the Markov Chain problem previously defined, where $w_i^n$ is the expectation of the random variable $W_i^n$ or the expected total number of particles present on area $i$ on day $n$. 
+
+Let $A$ be particles transitioning to area $i$ with $P(A)= \sum_j q_{ji}$ and let $B$ be particles transitioning to the atmosphere, with $P(B) = q_{i}$, so that $\sum_j q_{ij} + q_i = 1$. Then,
+
+$$
+\mathbb{E}[W_i^n] = \mathbb{E}[W_i^n | A] P(A) - \mathbb{E}[W_i^n | B] P(B)
+$$
+
+**Ni idea de como funciona esto, pero tiene que ser con S las movidas de las probabilidades de transición, lo único que suma P(S) = 1**
