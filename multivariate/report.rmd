@@ -79,7 +79,7 @@ p <- ncol(poke)
 poke_x <- poke_long %>% 
   select_if(is.numeric)
 mah_poke <- mahalanobis(poke_x, colMeans(poke_x), cov(poke_x))
-plot(sort(mah_poke))
+plot(sort(mah_poke), main = "Mahalanobis Distance", xlab = "", ylab = "")
 ```
 
 Now we can compute the outliers using the $\chi^2$ distribution:
@@ -96,17 +96,19 @@ As there are indeed some outliers, we can try to compute the Mahalanobis distanc
 mcd_poke <- covMcd(poke_x, alpha = .9)
 mah_robust <- mahalanobis(poke_x, mcd_poke$center, mcd_poke$cov)
 
-plot(sort(mah_robust))
+plot(sort(mah_robust), main = "Mahalanobis Distance (Robust Estimate)", xlab = "", ylab= "")
 ```
 
 And for the calculation of p-values and detection of outliers:
 ```{r}
 p_values_robust <- 1 - pchisq(mah_robust, p)
 sort_index_robust <- order(p_values_robust)
-outliers_index_robust <- sort_index_robust[which(p_values_robust[sort_index_robust] < ((1:n)/n*0.01))]
+outliers_index_robust <- 
+  sort_index_robust[which(p_values_robust[sort_index_robust] < ((1:n)/n*0.01))]
 
 head(poke_long[outliers_index, ])
-print(paste("Outlier Pokemon:", unique(poke_long[outliers_index,]$Name)))
+# Outlier Pokemon
+unique(poke_long[outliers_index, ]$Name)
 ```
 But indeed we get the same 3 pokemon showing up as outliers: `Chansey`, `Blissey` and `Shuckle`. The reason these 3 show up as outliers is their extreme values of `HP` (for `Chansey` and `Blissey`) and `Defense` and `Sp.Def` (for `Shuckle`).
 
