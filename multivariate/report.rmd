@@ -1,0 +1,124 @@
+---
+title: "Statistics for Data Science - UC3M Master"
+subtitle: "Multivariate Analysis - First Assignment"
+author: 
+  - "Ricardo Hortelano"
+  - "Javier Martinez"
+  - "Santiago Raposo"
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage{bm}
+output:
+  pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = NA,
+                      dev = 'png',
+                      dpi = 300)
+library(plotly)
+library(tidyverse)
+library(MASS)
+library(pracma)
+library(corrplot)
+library(GGally)
+library(robustbase)
+```
+
+```{r poke, include = FALSE, cache = TRUE}
+poke <- read_csv("data/pokemon.csv")[,-1] %>% 
+  mutate_at(vars(contains("number"), "target", contains("Generation")), as.factor)
+
+poke_long <- poke %>%
+  dplyr::select(-target) %>%
+  pivot_longer(
+    everything(),
+    names_to = c("fight", ".value"),
+    names_sep = "_"
+  )
+```
+
+
+# Part 1 - Pre-process the data set for practical analysis.
+
+## Missing Values
+The only variables with missing values are `poke1_Type.2` and `poke2_Type.2`. Although these values do not exist, they are not considered as actual missing values. Any given pokemon can have up to two types, the second being optional. Therefore, the absence of this second type is treated, not as unrecorded data, but as a type in itself.
+
+Regarding the rest of the dataset, there are no missing values.
+
+## Distribution of Statistics and Outliers
+For some of our plots, we are only interested in the distribution of the variables of the pokemons. Since each observation of our dataset is composed of two pokemon, we have joined the distributions of each of their variables in the dataset `poke_long`. After restructuring the dataset in this way, we can see a box plot of the variables so that we can get a rough idea of their distribution.
+
+```{r, cache = TRUE, dependson="poke"}
+poke_long %>% 
+  select_if(is.numeric) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "Statistic",
+    values_to = "Value"
+  ) %>% 
+  ggplot(aes(x = Statistic, y = Value))+
+  geom_boxplot()+
+  coord_flip()+
+  theme_bw()
+```
+As we can see, there are some extreme cases atending to the boxplot. Nevertheless, we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
+
+Based on our prior knowledge of dataset and its structure, we might wonder whether pokemons labeled as `Legendary` are outliers in the distribution of their statistics. We can check this using a pairplot.
+```{r, cache=TRUE, dependson="poke", message = F}
+numeric_vars <- poke_long %>% 
+  select_if(~is.numeric(.) || is.logical(.))
+# Take a sample of size = 1000 for plots
+numeric_sample <- numeric_vars[sample(nrow(numeric_vars)), ][1:1e3,]
+ggpairs(numeric_vars, aes(color = Legendary))
+```
+As we can observe, the legendary pokemons have larger values in the variables. This is a good indicative that the legendary pokemons could be outliers.
+
+In order to check whether these pokemons are actually outliers or if there could be any other type of outliers in our variables, we employ the False Discovery Rate method. First, we calculate the Mahalanobis distance for the numeric variables in our dataset.
+```{r}
+n <- nrow(poke)
+p <- ncol(poke)
+poke_x <- poke_long %>% 
+  select_if(is.numeric)
+mah_poke <- mahalanobis(poke_x, colMeans(poke_x), cov(poke_x))
+plot(sort(mah_poke), main = "Mahalanobis Distance", xlab = "", ylab = "")
+```
+The extreme cases in the right side can be outliers. In order to check that, we can compute the outliers using the $\chi^2$ distribution test:
+```{r}
+p_values <- 1 - pchisq(mah_poke, p)
+sort_index <- order(p_values)
+outliers_index <- sort_index[which(p_values[sort_index] < ((1:n)/n*0.01))]
+
+poke_long[outliers_index, ] %>% distinct(Name, .keep_all = T)
+```
+
+As there are indeed some outliers, we can try to compute the Mahalanobis distance again using the robust estimators for the sample covariance matrix.
+```{r}
+mcd_poke <- covMcd(poke_x, alpha = .9)
+mah_robust <- mahalanobis(poke_x, mcd_poke$center, mcd_poke$cov)
+
+plot(sort(mah_robust), main = "Mahalanobis Distance (Robust Estimate)", xlab = "", ylab= "")
+```
+
+And for the calculation of p-values and detection of outliers:
+```{r}
+p_values_robust <- 1 - pchisq(mah_robust, p)
+sort_index_robust <- order(p_values_robust)
+outliers_index_robust <- 
+  sort_index_robust[which(p_values_robust[sort_index_robust] < ((1:n)/n*0.01))]
+
+poke_long[outliers_index, ] %>% distinct(Name, .keep_all = T)
+# Outlier Pokemon
+unique(poke_long[outliers_index, ]$Name)
+```
+But indeed we get the same 3 pokemon showing up as outliers: `Chansey`, `Blissey` and `Shuckle`. The reason these 3 show up as outliers is their extreme values of `HP` (for `Chansey` and `Blissey`) and `Defense` and `Sp.Def` (for `Shuckle`).
+
+We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses. This also reinforces the fact that legendary pokemon are not outliers, as neither `Chansey`, `Blissey` nor `Shuckle` are legendary.
+
+Finally, just to further confirm that legendary pokemon have higher values for their statistics, we can observe the difference in a parallel coordinates plot.
+```{r, fig.height = 3, cache = T, dependson = "poke"}
+ggparcoord(numeric_sample, groupColumn = "Legendary")+
+  theme_bw()
+```
+
+Therefore, we can see that even though legendary pokemon have generally higher values for their statistics, the actual "outliers" are not legendary pokemon. The high values we see in this plot for `HP`, `Def` and `Sp.Def` are the pokemon we previously found to be outliers, `Chansey`, `Blissey` and `Shuckle`.
