@@ -117,6 +117,12 @@ $$
 
 $$
 
+Since all states of $\mathbf Q$ are transitories and $0 \leq \sum_j q_{ij} < 1 \ \forall i $ we know that $\mathbf Q^n$ converges to $\mathbf 0$ as $n \rightarrow \infin$. Then,
+
+$$
+\sum^\infin_{i=0}\mathbf Q^i = (\mathbb I - \mathbf Q)^{-1}
+$$
+
 
 
 
