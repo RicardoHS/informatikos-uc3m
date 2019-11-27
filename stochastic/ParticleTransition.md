@@ -1,6 +1,6 @@
 ## Stochastic Madrid Particles
 
-## 2A
+### 2A
 
 Let  $\sum_j q_{ij} $ be the probability of particle transtition from $i$ to other areas and $q_i$ the particles escaping to the atmosphere, where $\sum_j q_{ij} + q_i = 1$.  So that the total transition of particles to area $j$ is given by $\sum_i q_{ij}$. 
 
@@ -30,7 +30,7 @@ $$
 \mathbb{E}[W_j^n] = \mathbb{E}[U_j] + \sum_i q_{ij}\mathbb{E}[W_i^{n-1}]
 $$
 
-## 2B
+### 2B
 
 > Give an expression of $\textbf w^n = (w_i^n)_i$ in terms of $\mathbf w^{n+1} = (w_i^{n-1})_i$  by means of the law of total expectation
 
@@ -54,6 +54,18 @@ $$
 \mathbb{E}[W_i^n] = \mathbb{E}[\mathbb{E}[W_i^n | W_i^{n-1}]]
 $$
 
-**¯\\_(ツ)_/¯**
+TODO
+
+### 2C
+
+> Show that $\mathbf{w}^n = \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{n-1}}$, where $\mathbf u = (u_i)_i$ and $\mathbf Q = (q_{ij})_{ij}$
+
+Being 
+
+$$
+\mathbf u = \begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\end{bmatrix}, \mathbf Q = \begin{bmatrix}q_{11} & \dots & q_{15}\\ \vdots & \ddots & \vdots \\q_{51} & \dots & q_{55}\end{bmatrix}
+$$
+
+
 
 
