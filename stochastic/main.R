@@ -34,7 +34,7 @@ for(origin in 1:3){
 
 # Question c ----
 # We are asked for P(X3 = 4 | X2 = 2, X1 = 3) = P(X3 = 4 |X2=2) * P(X2 = 2 | X1 =3) * P(X1 = 3) = 
-# = P_{2,4} * P_{3,2} * (alpha*P)_{5}
+# = P_{2,4} * P_{3,2} * (alpha*P)_{3}
 # Assuming alpha = c(1/3, 1/3, 1/3, 0, 0), the answer is:
 alpha <- c(rep(1/3, 3),0,0)
 P[2,4] * P[3,2] * (alpha %*% P)[3]
