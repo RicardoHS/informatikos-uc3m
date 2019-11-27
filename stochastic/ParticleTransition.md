@@ -68,45 +68,32 @@ $$
 Show that the expected total number of particles on day $n$ is equal to the sum of emitted particles weighted with the transition probabilities.
 
 $$
+
+
 \mathbf{w}^n = \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{n-1}} = \mathbf u\sum_{i=0}^{n-1} \mathbf Q^i
-$$
-
-We know that, for the initial state $n=1$, without any transitioning of particles , the statement is true such that
 
 $$
 
+Knowing that the expected number of particles is given by
 
+$$
 \begin{aligned}
 \mathbb{E}[W_j^n] &= \mathbb{E}[U_j] + \sum_i q_{ij}\mathbb{E}[W_i^{n-1}] \\
 w_j^n &= u_j + \sum_i q_{ij}w_i^{n-1} \\
-w_j^1 &= u_j, \quad\text{where } w_j^{n-1} = 0
+\mathbf w^n &= \mathbf u + \mathbf Q\mathbf w^{n-1} \\
 \end{aligned}
-
 $$
 
-So that $\mathbf w^1 = \mathbf u$,  or the total number of particles being equal to the particles emitted.
+For the initial state $n=0$, without any transitioning of particles , the statement is true such that $\mathbf w^0 = \mathbf u$ , where $\mathbf w^{-1} = 0$
 
-Asumming that for any state $n=k$ the statement is true we prove that for state $n=k+1$ it is also true.
+Asumming that for any state $n\in\mathbb N$ the statement is true we prove that for state $n+1$ it is also true.
 
 $$
 \begin{aligned}
-\mathbf{w}^{k+1} &= \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{k-1}} + \mathbf{uQ^{k}}\\
-\mathbf{w}^{k+1} &= \mathbf u\sum_{i=0}^k\mathbf Q^i 
+\mathbf w^{n+1} &= \mathbf u + \mathbf Q\mathbf w^{n} = \mathbf u + \mathbf Q(\mathbf u + \mathbf Q\mathbf w^{n-1}) \\ 
+& =\mathbf u + \mathbf u \mathbf Q + \mathbf Q^{n+1 - (n-1)}\mathbf w^{n-1} = \ldots \\ 
+& = \mathbf u \sum_{i=0}^{n} \mathbf Q^i
 \end{aligned}
-$$
-
-We know that for $n=2$ ,
-
-$$
-w_j^2 = u_j + \sum_i q_{ij}w_i^{1} \quad\Rightarrow\quad w_j^2 = u_j + \sum_i q_{ij}u_j
-$$
-
-That is, $\mathbf w^2 = \mathbf u +\mathbf u\mathbf Q$ .
-
-Therefore, applying this for any value $k+1$, 
-
-$$
-\mathbf{w}^{k+1} = \mathbf u\sum_{i=0}^k\mathbf Q^i
 $$
 
 
