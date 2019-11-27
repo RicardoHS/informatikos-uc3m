@@ -79,14 +79,14 @@ $$
 
 Such that $\mathbf w^1 = \mathbf u$, the total number of particles being the particles emitted.
 
-
-
 Asumming that for any state $n=k$ the statement is true we prove that for state $n=k+1$ it is also true.
 
 $$
-\mathbf{w}^{k+1} = \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{k-1}} + \mathbf{uQ^{k}}
+\begin{aligned}
+\mathbf{w}^{k+1} &= \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{k-1}} + \mathbf{uQ^{k}}\\
+
+\mathbf{w}^{k+1} &= \mathbf u\sum_{k=0}\mathbf Q^k 
+\end{aligned}
 $$
-
-
 
 
