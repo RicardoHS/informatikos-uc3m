@@ -67,6 +67,10 @@ $$
 \mathbf u = \begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\end{bmatrix} \qquad \mathbf Q = \begin{bmatrix}q_{11} & \dots & q_{15}\\ \vdots & \ddots & \vdots \\q_{51} & \dots & q_{55}\end{bmatrix}
 $$
 
+Show that the expected total number of particles on day $n$ is equal to the sum of emitted particles weighted with the transition probabilities.
+
+We know that, for the initial state $n=1$, without any transitioning of particles , the statement is true. Such that $\mathbf w^1 = \mathbf u$, the total number of particles being the particles emitted.
+
 
 
 
