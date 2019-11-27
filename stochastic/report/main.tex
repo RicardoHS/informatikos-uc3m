@@ -61,7 +61,7 @@ Our first consumer journey is \verb|Ch 3 -> Ch 2 -> Conversion|, which is equiva
 The probability we then have to calculate is $P(X_3 = 4|X_2=2, X_1 = 3)$. This can be done as follows:
 \begin{align*}
 	&P(X_3 = 4|X_2=2, X_1 = 3) = P(X_3 = 4 | X_2 = 2) * P(X_2 = 2 | X_1 = 3) * P(X_1 = 3) \\
-	&= P_{2,4} * P_{3,2} * (\bm{\alpha}P)_5
+	&= P_{2,4} * P_{3,2} * (\bm{\alpha}P)_3
 \end{align*}
 Assuming our initial distribution $\bm{\alpha} = (\frac{1}{3}, \frac{1}{3}, \frac{1}{3}, 0, 0)$\footnote{We are assuming the client cannot start in one of the conversion or non-conversion states and that it is uniform on the rest, which seems reasonable.} the answer is $0.0026$.
 
@@ -81,5 +81,27 @@ We can then compute the total conversion ratio as the ratio between the sum of c
 \]
 
 \subsection{Question e}
-
+We get the following results for the two approaches to calculating the removal effect.
+\begin{table}[H]
+	\centering  
+	\begin{tabular}{clccc}
+		\toprule
+		          Approach            & State & Removal Effect &  &  \\ \midrule
+		Completely removing the state & Ch 1  &     0.2085     &  &  \\
+		                              & Ch 2  &    -0.0285     &  &  \\
+		                              & Ch 3  &    -0.2328     &  &  \\ 
+		Making the state ``useless''  & Ch 1  &     0.5921     &  &  \\
+		                              & Ch 2  &     0.4013     &  &  \\
+		                              & Ch 3  &     0.4681     &  &  \\ \bottomrule
+	\end{tabular}
+	\caption{Removal effect of both approaches}
+	\label{tab:removal-effect}
+\end{table}
+The conversion ratio is defined as $1 - \frac{CR_{new}}{CR_{old}}$. We can see then that if the new conversion ratio is smaller than the old conversion ratio, the removal effect will be positive and it will be negative otherwise.
+Seeing \cref{tab:removal-effect} we can conclude that:
+\begin{itemize}
+	\item \textbf{Channel 1} always has a positive removal effect, which means that removing it causes the new conversion rate to be lower than the global conversion rate. Both approaches then seem to indicate that removing channel one would be counterproductive, as it is contributing to a high amount of conversions.
+	\item \textbf{Channel 2} does not seem to change the conversion rate much with the first approach, but for the second approach it does make the new conversion rate lower. Therefore we can assume that this state is maybe not as important as the first one, but it does have a positive impact on the conversion rate.
+	\item The removal of \textbf{Channel 3} actually has contradicting results for the two strategies. In the first one, removing it actually raises the conversion rate, but with the second approach its removal decreases the conversion rate by almost half. We would have to further examine why this is the case to conclude whether the removal of this channel would affect the conversion rate positively or not.
+\end{itemize}
 \end{document}
