@@ -129,4 +129,16 @@ $$
 \mathbf w = \lim_{n \rightarrow \infin} \mathbf w^n = \mathbf u \sum_{i=0}^{\infin}\mathbf Q^i = \mathbf u (\mathbb I - \mathbf Q)^{-1}
 $$
 
+## 2D
+
+> The city council wants to limit pollution levels to a prescribed level by prescribing the amount of particle present every day in each area. Show how to determine the number of emited particles that would result in a prescribed total number of particles.
+
+In order to limit the pollution levels and the amount of $PM_{10}$ ($W_j$), regardless of the possible transitions of particles, constant over time and beyond the scope of the city council, the only way to achieve this limit is, as previously seen, by the random variable $U_i$ that defines the emissions on each area $i$ such that
+
+$$
+W_j^n = U_j + \sum_iB_{ij}^n
+$$
+
+Therefore, depending on the distribution of $U_j$ and, consequently, its expectation, the number of particles could be controled and prescribed.
+
 
