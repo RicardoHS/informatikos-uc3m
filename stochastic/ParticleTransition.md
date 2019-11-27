@@ -69,7 +69,21 @@ $$
 
 Show that the expected total number of particles on day $n$ is equal to the sum of emitted particles weighted with the transition probabilities.
 
-We know that, for the initial state $n=1$, without any transitioning of particles , the statement is true. Such that $\mathbf w^1 = \mathbf u$, the total number of particles being the particles emitted.
+We know that, for the initial state $n=1$, without any transitioning of particles , the statement is true since 
+
+$$
+\mathbb{E}[W_j^n] = \mathbb{E}[U_j] + \sum_i q_{ij}\mathbb{E}[W_i^{n-1}] \\
+w_j^n = u_j + \sum_i q_{ij}w_i^{n-1} \Rightarrow w_j^1 = u_j\\
+
+$$
+
+ Such that $\mathbf w^1 = \mathbf u$, the total number of particles being the particles emitted.
+
+Asumming that for any state $n=k$ the statement is true we prove that for state $n=k+1$ it is also true.
+
+$$
+\mathbf{w}^{k+1} = \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{k-1}} + \mathbf{uQ^{k}}
+$$
 
 
 
