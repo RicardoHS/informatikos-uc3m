@@ -77,7 +77,9 @@ w_j^n = u_j + \sum_i q_{ij}w_i^{n-1} \Rightarrow w_j^1 = u_j\\
 
 $$
 
- Such that $\mathbf w^1 = \mathbf u$, the total number of particles being the particles emitted.
+Such that $\mathbf w^1 = \mathbf u$, the total number of particles being the particles emitted.
+
+
 
 Asumming that for any state $n=k$ the statement is true we prove that for state $n=k+1$ it is also true.
 
