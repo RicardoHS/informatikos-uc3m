@@ -65,17 +65,15 @@ TODO
 Being 
 
 $$
-\mathbf w^n = \begin{bmatrix}w_1^n\\w_2^n\\w_3^n\\w_4^n\\w_5^n \\ w_{a}^n\end{bmatrix} 
+\mathbf w^n = \begin{bmatrix}w_1^n\\w_2^n\\w_3^n\\w_4^n\\w_5^n \\ \end{bmatrix} 
 \qquad
-\mathbf u = \begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\\0\end{bmatrix} \qquad 
-\mathbf Q = \begin{bmatrix}q_{11} & \dots & q_{15} &q_{1a} \\ 
-    \vdots & \ddots & \vdots &\vdots \\
-    q_{51} & \dots & q_{55} & q_{5a} \\
-    0 &\dots & 0 & 0
+\mathbf u = \begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\end{bmatrix} \qquad 
+\mathbf Q = \begin{bmatrix}q_{11} & \dots & q_{15}  \\ 
+    \vdots & \ddots & \vdots  \\
+    q_{51} & \dots & q_{55}  \\
+
     \end{bmatrix}
 $$
-
-Notice that $\mathbf Q$ is not a stochastic matrix since particles in the atmosphere are lost (dangling node). As shown in the previous transition graph.
 
 Show that the expected total number of particles on day $n$ is equal to the sum of emitted particles weighted with the transition probabilities.
 
@@ -112,6 +110,13 @@ $$
 
 Show that $\mathbf w^n \xrightarrow[n\rightarrow \infin]{} \mathbf w$ and show how to compute $\mathbf w$ from $\mathbf u$.
 
-Knowing that $\mathbf w^n = \mathbf u \sum_{i=0}^{n-1} \mathbf Q^i$  and that $\mathbf Q$, as previously defined, is a transition matrix, we can define the long-term behaviour of the total particles in the city.
+Knowing that $\mathbf w^n = \mathbf u \sum_{i=0}^{n-1} \mathbf Q^i$  we want to study the long term behaviour of $\mathbf w^n$ such that
+
+$$
+\lim_{n \rightarrow \infin} \mathbf w^n = \lim_{n \rightarrow \infin} \mathbf u \sum_{i=0}^{n-1}\mathbf Q^i = \mathbf u \sum_{i=0}^{\infin}\mathbf Q^i
+
+$$
+
+
 
 
