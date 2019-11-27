@@ -104,4 +104,17 @@ Seeing \cref{tab:removal-effect} we can conclude that:
 	\item \textbf{Channel 2} does not seem to change the conversion rate much with the first approach, but for the second approach it does make the new conversion rate lower. Therefore we can assume that this state is maybe not as important as the first one, but it does have a positive impact on the conversion rate.
 	\item The removal of \textbf{Channel 3} actually has contradicting results for the two strategies. In the first one, removing it actually raises the conversion rate, but with the second approach its removal decreases the conversion rate by almost half. We would have to further examine why this is the case to conclude whether the removal of this channel would affect the conversion rate positively or not.
 \end{itemize}
+
+\section{Question 2}
+\subsection{Question a}
+We can see the transition graph in \cref{fig:trans-graph}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = .7]{figures/transition-graph.pdf}
+	\caption{Transition Graph}
+	\label{fig:trans-graph}
+\end{figure}
+The state \verb|Atm| represents a particle escaping into the atmosphere, and it is the only absorbing state. The other states are all transient and aperiodic (as they all have loops to themselves).
+
+We have not represented the probabilities in the graph as they are not given and it would be quite noisy. The arrows indicate that in principle the states are all connected with each other (in both directions).
 \end{document}
