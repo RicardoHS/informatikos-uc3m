@@ -36,7 +36,7 @@ $$
 
 ### 2Bb
 
-> Give an expression of $\textbf w^n = (w_i^n)_i$ in terms of $\mathbf w^{n+1} = (w_i^{n-1})_i$  by means of the law of total expectation
+> Give an expression of $\textbf w^n = (w_i^n)_i$ in terms of $\mathbf w^{n-1} = (w_i^{n-1})_i$  by means of the law of total expectation
 
 Let $X$ be a random variable and let $A_1, \dots, A_k$ be a sequence of events that partition the sample space. Then, 
 
@@ -52,13 +52,20 @@ $$
 
 Given the Markov Chain problem previously defined, where $w_i^n$ is the expectation of the random variable $W_i^n$ or the expected total number of particles present on area $i$ on day $n$. 
 
-Since $W_i^n$ and $W_i^{n-1}$ follow the same distribution, then
+Defining the expectation of $W_i^n$ by means of the law of total expectation, then
 
 $$
 \mathbb{E}[W_i^n] = \mathbb{E}[\mathbb{E}[W_i^n | W_i^{n-1}]]
 $$
 
-TODO
+So that
+
+$$
+\begin{aligned}
+w_j^n &= u_j + \sum_i q_{ij}w_i^{n-1} \\
+\mathbf w^n &= \mathbf u + \mathbf Q\mathbf w^{n-1} \\
+\end{aligned}
+$$
 
 ### 2Bc
 
