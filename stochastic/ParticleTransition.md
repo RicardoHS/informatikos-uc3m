@@ -71,9 +71,11 @@ $$
 \mathbf Q = \begin{bmatrix}q_{11} & \dots & q_{15} &q_{1a} \\ 
     \vdots & \ddots & \vdots &\vdots \\
     q_{51} & \dots & q_{55} & q_{5a} \\
-    0 &\dots & 0 & 1
+    0 &\dots & 0 & 0
     \end{bmatrix}
 $$
+
+Notice that $\mathbf Q$ is not a stochastic matrix since particles in the atmosphere are lost (dangling node). As shown in the previous transition graph.
 
 Show that the expected total number of particles on day $n$ is equal to the sum of emitted particles weighted with the transition probabilities.
 
@@ -110,6 +112,6 @@ $$
 
 Show that $\mathbf w^n \xrightarrow[n\rightarrow \infin]{} \mathbf w$ and show how to compute $\mathbf w$ from $\mathbf u$.
 
-Knowing that $\mathbf w^n = \mathbf u \sum_{i=0}^n \mathbf Q^i$  and that $\mathbf Q$, as previously defined, is a transition matrix, we can define the long-term behaviour of the total particles in the city.
+Knowing that $\mathbf w^n = \mathbf u \sum_{i=0}^{n-1} \mathbf Q^i$  and that $\mathbf Q$, as previously defined, is a transition matrix, we can define the long-term behaviour of the total particles in the city.
 
 
