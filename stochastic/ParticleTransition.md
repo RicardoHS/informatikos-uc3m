@@ -63,7 +63,8 @@ TODO
 Being 
 
 $$
-\mathbf u = \begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\end{bmatrix}, \mathbf Q = \begin{bmatrix}q_{11} & \dots & q_{15}\\ \vdots & \ddots & \vdots \\q_{51} & \dots & q_{55}\end{bmatrix}
+\mathbf w^n = \begin{bmatrix}w_1^n\\w_2^n\\w_3^n\\w_4^n\\w_5^n\end{bmatrix} \qquad
+\mathbf u = \begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\end{bmatrix} \qquad \mathbf Q = \begin{bmatrix}q_{11} & \dots & q_{15}\\ \vdots & \ddots & \vdots \\q_{51} & \dots & q_{55}\end{bmatrix}
 $$
 
 
