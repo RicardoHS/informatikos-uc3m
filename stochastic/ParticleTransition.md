@@ -58,8 +58,6 @@ TODO
 
 ### 2C
 
-> Show that $\mathbf{w}^n = \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{n-1}}$, where $\mathbf u = (u_i)_i$ and $\mathbf Q = (q_{ij})_{ij}$
-
 Being 
 
 $$
@@ -68,6 +66,10 @@ $$
 $$
 
 Show that the expected total number of particles on day $n$ is equal to the sum of emitted particles weighted with the transition probabilities.
+
+$$
+\mathbf{w}^n = \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{n-1}} = \mathbf u\sum_{n=0}^{n-1} \mathbf Q
+$$
 
 We know that, for the initial state $n=1$, without any transitioning of particles , the statement is true since 
 
@@ -84,7 +86,6 @@ Asumming that for any state $n=k$ the statement is true we prove that for state 
 $$
 \begin{aligned}
 \mathbf{w}^{k+1} &= \mathbf u + \mathbf{uQ} + \dots + \mathbf{uQ^{k-1}} + \mathbf{uQ^{k}}\\
-
 \mathbf{w}^{k+1} &= \mathbf u\sum_{k=0}\mathbf Q^k 
 \end{aligned}
 $$
