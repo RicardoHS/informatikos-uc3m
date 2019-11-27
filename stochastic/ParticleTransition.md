@@ -74,12 +74,17 @@ $$
 We know that, for the initial state $n=1$, without any transitioning of particles , the statement is true such that
 
 $$
-\mathbb{E}[W_j^n] = \mathbb{E}[U_j] + \sum_i q_{ij}\mathbb{E}[W_i^{n-1}] \\
-w_j^n = u_j + \sum_i q_{ij}w_i^{n-1} \Rightarrow w_j^1 = u_j\\
+
+
+\begin{aligned}
+\mathbb{E}[W_j^n] &= \mathbb{E}[U_j] + \sum_i q_{ij}\mathbb{E}[W_i^{n-1}] \\
+w_j^n &= u_j + \sum_i q_{ij}w_i^{n-1} \\
+w_j^1 &= u_j, \quad\text{where } w_j^{n-1} = 0
+\end{aligned}
 
 $$
 
-So that $\mathbf w^1 = \mathbf u$, the total number of particles being equal to the particles emitted.
+So that $\mathbf w^1 = \mathbf u$,  or the total number of particles being equal to the particles emitted.
 
 Asumming that for any state $n=k$ the statement is true we prove that for state $n=k+1$ it is also true.
 
@@ -89,3 +94,21 @@ $$
 \mathbf{w}^{k+1} &= \mathbf u\sum_{i=0}^k\mathbf Q^i 
 \end{aligned}
 $$
+
+We know that for $n=2$ ,
+
+$$
+w_j^2 = u_j + \sum_i q_{ij}w_i^{1} \quad\Rightarrow\quad w_j^2 = u_j + \sum_i q_{ij}u_j
+$$
+
+That is, $\mathbf w^2 = \mathbf u +\mathbf u\mathbf Q$ .
+
+Therefore, applying this for any value $k+1$, 
+
+$$
+\mathbf{w}^{k+1} = \mathbf u\sum_{i=0}^k\mathbf Q^i
+$$
+
+
+
+
