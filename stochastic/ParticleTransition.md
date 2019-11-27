@@ -123,6 +123,10 @@ $$
 \sum^\infin_{i=0}\mathbf Q^i = (\mathbb I - \mathbf Q)^{-1}
 $$
 
+Therefore, 
 
+$$
+\mathbf w = \lim_{n \rightarrow \infin} \mathbf w^n = \mathbf u \sum_{i=0}^{\infin}\mathbf Q^i = \mathbf u (\mathbb I - \mathbf Q)^{-1}
+$$
 
 
