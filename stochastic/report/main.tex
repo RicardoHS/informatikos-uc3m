@@ -105,6 +105,9 @@ Seeing \cref{tab:removal-effect} we can conclude that:
 	\item The removal of \textbf{Channel 3} actually has contradicting results for the two strategies. In the first one, removing it actually raises the conversion rate, but with the second approach its removal decreases the conversion rate by almost half. We would have to further examine why this is the case to conclude whether the removal of this channel would affect the conversion rate positively or not.
 \end{itemize}
 
+The main difference between the two approaches is that in the first one, as we are removing a state (row and column) from the transition matrix, we have to normalize it so that the rows sum to $1$ again, while in the second approach we just change the probabilities for the state we are studying. 
+So in some sense in the first approach we are artificially ``inflating'' the other transition probabilities.
+
 \section{Question 2}
 \subsection{Question a}
 We can see the transition graph in \cref{fig:trans-graph}.
