@@ -41,7 +41,7 @@ The state space is all of the unique values of the chain existing in our sample.
 
 We found the estimate of the transition probabilities using maximum likelihood, as we have from our notes:
 \[
-	\hat p_{ij} = \frac{n_{ij}}{\sum_{j = 1}^{k}} j,i \in S
+	\hat p_{ij} = \frac{n_{ij}}{\sum_{j = 1}^{k}n_{ij}} \quad i,j \in S
 \]
 Where $n_{ij}$ is the total number of transitions from state $i$ to state $j$ and the denominator is the total amount of transitions \emph{into} state $j$.
 The estimate found for our sample is the following transition matrix:
@@ -163,7 +163,7 @@ w_j^n &= u_j + \sum_i q_{ij}w_i^{n-1} \\
 \end{aligned}
 \]
 
-\subsubsection{Part III}
+\subsubsection*{Part III}
 Given 
 \[\
 \mathbf w^n = \begin{bmatrix}w_1^n\\w_2^n\\w_3^n\\w_4^n\\w_5^n \\ \end{bmatrix} 
