@@ -34,7 +34,7 @@ for(origin in 1:3){
 
 # Question c ----
 # We are asked for P(X3 = 4 | X2 = 2, X1 = 3) = P(X3 = 4 |X2=2) * P(X2 = 2 | X1 =3) * P(X1 = 3) = 
-# = P_{2,4} * P_{3,2} * (alpha*P)_{5}
+# = P_{2,4} * P_{3,2} * (alpha*P)_{3}
 # Assuming alpha = c(1/3, 1/3, 1/3, 0, 0), the answer is:
 alpha <- c(rep(1/3, 3),0,0)
 P[2,4] * P[3,2] * (alpha %*% P)[3]
@@ -46,7 +46,34 @@ R <- P[1:3,4:5]
 # Lim P-> infty = (I-Q)^-1 * R
 limit <- solve(diag(nrow(Q))-Q) %*% R
 # The proportion of visits ending in a conversion (4) is:
-sum(limit[,1])/sum(limit)
+(conversion_rate <- sum(limit[,1])/sum(limit))
 # This is not the same as the limiting distribution for the conversion state. First of all, the 
 # conversion proportion is a number and the limiting distribution is a vector that tells us for each
 # starting state what proportion ends in conversion.
+# 
+# Question e ----
+removal_effect_a <- function(P, state, conversion_rate){
+  Pa <- P[-state, -state]
+  for(i in 1:nrow(Pa)){
+    Pa[i,] <- Pa[i,]/rowSums(Pa)[i]
+  }
+  Qa <- Pa[1:2, 1:2]
+  Ra <- Pa[1:2, 3:4]
+  limit_a <- solve(diag(nrow(Qa)) - Qa) %*% Ra
+  
+  1 - sum(limit_a[,1]/sum(limit_a))/conversion_rate
+}
+
+removal_effect_b <- function(P, state, conversion_rate){
+  # Convertimos al estado iminar en un estado "inutil"
+  Pb <- P
+  Pb[state, ] <- 0
+  Pb[state, 5] <- 1
+  
+  # Calculamos el removal effect
+  Qb <- Pb[1:3, 1:3]
+  Rb <- Pb[1:3, 4:5]
+  limit <- solve(diag(nrow(Qb)) - Qb) %*% Rb
+  
+  1 - sum(limit[,1]/sum(limit))/conversion_rate
+}
