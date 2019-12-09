@@ -122,12 +122,14 @@ ggparcoord(as, columns = 1:7, groupColumn = "Generation") + theme_bw()
 ```
 We can see that, unlike in the case of legendary pokemon, there does not appear to be any particular generation that stands out among the rest of them.
 
-In order to check whether these pokemons are actually outliers or if there could be any other type of outliers in our variables, we employ the False Discovery Rate method. First, we calculate the Mahalanobis distance for the numeric variables in our dataset.
+## Outlier Detection
+In order to check if there are any outliers in our dataset we will first remove the legendary pokemon from consideration. After this, we will employ the false False Discovey Rate Method to check for outliers among the remaining pokemon.
 ```{r}
-n <- nrow(poke)
-p <- ncol(poke)
-poke_x <- poke_long %>% 
+poke_x <- poke_long %>%
+  filter(Legendary == 0) %>% 
   select_if(is.numeric)
+n <- nrow(poke_x)
+p <- ncol(poke_x)
 mah_poke <- mahalanobis(poke_x, colMeans(poke_x), cov(poke_x))
 plot(sort(mah_poke), main = "Mahalanobis Distance", xlab = "", ylab = "")
 ```
@@ -137,7 +139,8 @@ p_values <- 1 - pchisq(mah_poke, p)
 sort_index <- order(p_values)
 outliers_index <- sort_index[which(p_values[sort_index] < ((1:n)/n*0.01))]
 
-poke_long[outliers_index, ] %>% distinct(Name, .keep_all = T)
+poke_long[outliers_index, ] %>% 
+  dplyr::select(Name)
 ```
 
 As there are indeed some outliers, we can try to compute the Mahalanobis distance again using the robust estimators for the sample covariance matrix.
@@ -155,18 +158,6 @@ sort_index_robust <- order(p_values_robust)
 outliers_index_robust <- 
   sort_index_robust[which(p_values_robust[sort_index_robust] < ((1:n)/n*0.01))]
 
-poke_long[outliers_index, ] %>% distinct(Name, .keep_all = T)
-# Outlier Pokemon
-unique(poke_long[outliers_index, ]$Name)
+poke_long[outliers_index, ] %>% dplyr::select(Name)
 ```
-But indeed we get the same 3 pokemon showing up as outliers: `Chansey`, `Blissey` and `Shuckle`. The reason these 3 show up as outliers is their extreme values of `HP` (for `Chansey` and `Blissey`) and `Defense` and `Sp.Def` (for `Shuckle`).
-
-We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses. This also reinforces the fact that legendary pokemon are not outliers, as neither `Chansey`, `Blissey` nor `Shuckle` are legendary.
-
-Finally, just to further confirm that legendary pokemon have higher values for their statistics, we can observe the difference in a parallel coordinates plot.
-```{r, fig.height = 3, cache = T, dependson = "poke"}
-ggparcoord(numeric_sample, groupColumn = "Legendary")+
-  theme_bw()
-```
-
-Therefore, we can see that even though legendary pokemon have generally higher values for their statistics, the actual "outliers" are not legendary pokemon. The high values we see in this plot for `HP`, `Def` and `Sp.Def` are the pokemon we previously found to be outliers, `Chansey`, `Blissey` and `Shuckle`.
+We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses.
