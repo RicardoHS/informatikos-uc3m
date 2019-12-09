@@ -49,9 +49,41 @@ The only variables with missing values are `poke1_Type.2` and `poke2_Type.2`. Al
 
 Regarding the rest of the dataset, there are no missing values.
 
-## Distribution of Statistics and Outliers
-For some of our plots, we are only interested in the distribution of the variables of the pokemons. Since each observation of our dataset is composed of two pokemon, we have joined the distributions of each of their variables in the dataset `poke_long`. After restructuring the dataset in this way, we can see a box plot of the variables so that we can get a rough idea of their distribution.
+# Distribution of Statistics
 
+### Single Variable Analysis
+For some of our plots and exploratory analysis, we are only interested in the distribution of the variables of the pokemons. Since each observation of our dataset is composed of two pokemon, we have joined the distributions of each of their variables in the dataset `poke_long`
+
+#### Density Plots
+First we can see some density plots of our numerical variables to get some insight into their shape:
+
+```{r}
+poke_long %>% 
+  select_if(is.numeric) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "Statistic",
+    values_to = "Value"
+  ) %>% 
+  # mutate(Value = log(Value)) %>% 
+  ggplot(aes(x = Value, y = ..density..))+ 
+  geom_density(fill = "lightblue")+
+  facet_wrap(~Statistic)+
+  theme_bw()
+```
+
+We can also try to get some insight into the distribution of our numerical variables over the values of our categorical variables by plotting some bar charts.
+
+```{r}
+poke_long %>% 
+  ggplot(aes(x = Generation))+
+  geom_bar()+
+  theme_bw()
+```
+
+We can see that the distribution of the generations of pokemon is not uniform, which might affect the amount of wins for each generation in the fights. We can also check the distribution of the legendary pokemon in our data.
+
+We can also look at a boxplot of our variables to get some more insight into their distributions, as well as letting us see wheter there are any outliers in our data.
 ```{r, cache = TRUE, dependson="poke"}
 poke_long %>% 
   select_if(is.numeric) %>% 
