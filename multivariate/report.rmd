@@ -23,6 +23,8 @@ library(pracma)
 library(corrplot)
 library(GGally)
 library(robustbase)
+library(cowplot)
+theme_set(theme_bw())
 ```
 
 ```{r poke, include = FALSE, cache = TRUE}
