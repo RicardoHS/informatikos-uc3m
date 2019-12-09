@@ -42,7 +42,7 @@ poke_long <- poke %>%
 ```
 
 
-# Part 1 - Pre-process the data set for practical analysis.
+# Pre-process the data set for practical analysis.
 
 ## Missing Values
 The only variables with missing values are `poke1_Type.2` and `poke2_Type.2`. Although these values do not exist, they are not considered as actual missing values. Any given pokemon can have up to two types, the second being optional. Therefore, the absence of this second type is treated, not as unrecorded data, but as a type in itself.
