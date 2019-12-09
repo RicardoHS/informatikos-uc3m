@@ -97,17 +97,30 @@ poke_long %>%
   coord_flip()+
   theme_bw()
 ```
-As we can see, there are some extreme cases atending to the boxplot. Nevertheless, we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
+As we can see, there are some extreme cases present in the boxplot. Nevertheless, we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
 
-Based on our prior knowledge of dataset and its structure, we might wonder whether pokemons labeled as `Legendary` are outliers in the distribution of their statistics. We can check this using a pairplot.
+We know that there are two groups in our dataset, as we have the variable `Legendary` which indicates if a pokemon has that quality. It is also known that legendary pokemon have higher values for their statistics than standard ones, but we might want to check if it is true.
+
+A way we can verify this statement is by looking at a scatter plot matrix and the density of our variables when separated by this categorical variable.
 ```{r, cache=TRUE, dependson="poke", message = F}
 numeric_vars <- poke_long %>% 
   select_if(~is.numeric(.) || is.logical(.))
-# Take a sample of size = 1000 for plots
-numeric_sample <- numeric_vars[sample(nrow(numeric_vars)), ][1:1e3,]
 ggpairs(numeric_vars, aes(color = Legendary))
 ```
-As we can observe, the legendary pokemons have larger values in the variables. This is a good indicative that the legendary pokemons could be outliers.
+Indeed, legendary pokemon seem to have higher values for their variables in general than normal pokemon. This means that we will have to treat legendary pokemon separately for our outlier detection, as otherwise they will be found to be outliers (when they are really just a different group).
+
+We can also see the difference between legendary and normal pokemon in a parallel coordinates plot.
+```{r, fig.height = 3, cache = T, dependson = "poke"}
+ggparcoord(numeric_vars, groupColumn = "Legendary")+
+  theme_bw()
+```
+
+We can see that legendary pokemon indeed have in general higher values for their stats than normal pokemon, as is to be expected. We might be also interested in seeing if there is any difference between the pokemon from different generations with respect to their statistics, for which we can also use a parallel coordinates plot.
+```{r}
+as <- bind_cols(numeric_vars, Generation= poke_long$Generation)
+ggparcoord(as, columns = 1:7, groupColumn = "Generation") + theme_bw()
+```
+We can see that, unlike in the case of legendary pokemon, there does not appear to be any particular generation that stands out among the rest of them.
 
 In order to check whether these pokemons are actually outliers or if there could be any other type of outliers in our variables, we employ the False Discovery Rate method. First, we calculate the Mahalanobis distance for the numeric variables in our dataset.
 ```{r}
