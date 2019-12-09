@@ -37,7 +37,8 @@ poke_long <- poke %>%
     everything(),
     names_to = c("fight", ".value"),
     names_sep = "_"
-  )
+  ) %>% 
+  distinct(Name, .keep_all = T)
 ```
 
 
