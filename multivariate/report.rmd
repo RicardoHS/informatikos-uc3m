@@ -22,6 +22,7 @@ library(MASS)
 library(pracma)
 library(corrplot)
 library(GGally)
+library(factoextra)
 library(robustbase)
 library(cowplot)
 theme_set(theme_bw())
@@ -161,3 +162,27 @@ outliers_index_robust <-
 poke_long[outliers_index, ] %>% dplyr::select(Name)
 ```
 We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses.
+
+# Principal Component Analysis
+
+For principal component analysis we will use the whole dataset. Obviously we can only consider the numerical variables in our dataset.
+
+```{r}
+poke_numeric <- select_if(poke, is.numeric) 
+pca <- prcomp(poke_numeric)
+fviz_eig(pca, ncp = 12)
+```
+
+We can plot the weights of the first three principal components to get some insight into our data.
+```{r}
+plot(pca$rotation[,1],pch=20,col="deepskyblue2",main="Weights for the first PC")
+abline(h=0)
+text(pca$rotation[,1],labels=colnames(poke_numeric),pos = 1,col="firebrick2",cex=0.5)
+```
+
+```{r}
+plot(pca$rotation[,1],pch=20,col="deepskyblue2",main="Weights for the first PC")
+abline(h=0)
+text(pca$rotation[,1],labels=colnames(poke_numeric),pos = 1,col="firebrick2",cex=0.5)
+```
+
