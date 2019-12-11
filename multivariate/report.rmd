@@ -191,3 +191,10 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
   geom_hline(yintercept=0)
 ```
 
+```{r}
+ggplot(as.data.frame(pca$rotation[,1:2]), aes(x=0,y=0,xend=PC1, yend=PC2, label=rownames(as.data.frame(pca$rotation[,1:2])))) + geom_segment( arrow = arrow(length = unit(0.1,"cm"))) + coord_cartesian(xlim=-1:1, ylim=-1:1) + geom_text()
+```
+
+
+
+
