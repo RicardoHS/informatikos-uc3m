@@ -183,6 +183,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC1))+
   geom_label_repel(aes(label = variable))+
   geom_hline(yintercept=0)
 ```
+We can see that the weights are all quite high in general. However, the variables related to the first pokemon have bigger values than the ones related to the second one. A possible interpretation of this is **TODO: AÑADIR INTERPRETACION**. 
 
 ```{r}
 ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
@@ -192,9 +193,23 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
 ```
 
 ```{r}
-ggplot(as.data.frame(pca$rotation[,1:2]), aes(x=0,y=0,xend=PC1, yend=PC2, label=rownames(as.data.frame(pca$rotation[,1:2])))) + geom_segment( arrow = arrow(length = unit(0.1,"cm"))) + coord_cartesian(xlim=-1:1, ylim=-1:1) + geom_text()
+ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC3))+
+  geom_point()+
+  geom_label_repel(aes(label = variable))+
+  geom_hline(yintercept=0)
 ```
 
 
+```{r, warning=F, message = F}
+ggplot(as.data.frame(pca$rotation[,1:2]), 
+       aes(x=0,y=0,
+           xend=PC1, 
+           yend=PC2, 
+           label=rownames(as.data.frame(pca$rotation[,1:2]))))+ 
+  geom_segment( arrow = arrow(length = unit(0.1,"cm")))+
+  coord_cartesian(xlim=-1:1, ylim=-1:1)+
+  geom_text(aes(x = PC1, y = PC2))+
+  coord_flip()
+```
 
-
+# Factor Analysis
