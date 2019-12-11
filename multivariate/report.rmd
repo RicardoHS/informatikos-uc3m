@@ -23,6 +23,7 @@ library(pracma)
 library(corrplot)
 library(GGally)
 library(factoextra)
+library(ggrepel)
 library(robustbase)
 library(cowplot)
 theme_set(theme_bw())
@@ -172,17 +173,21 @@ poke_numeric <- select_if(poke, is.numeric)
 pca <- prcomp(poke_numeric)
 fviz_eig(pca, ncp = 12)
 ```
+We can see in this plot that the first two principal components already explain almost half the variance in our dataset. We will now explore the weights of the principal components.
 
 We can plot the weights of the first three principal components to get some insight into our data.
 ```{r}
-plot(pca$rotation[,1],pch=20,col="deepskyblue2",main="Weights for the first PC")
-abline(h=0)
-text(pca$rotation[,1],labels=colnames(poke_numeric),pos = 1,col="firebrick2",cex=0.5)
+pca_weights <- as_tibble(pca$rotation, rownames = "variable")
+ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC1))+
+  geom_point()+
+  geom_label_repel(aes(label = variable))+
+  geom_hline(yintercept=0)
 ```
 
 ```{r}
-plot(pca$rotation[,1],pch=20,col="deepskyblue2",main="Weights for the first PC")
-abline(h=0)
-text(pca$rotation[,1],labels=colnames(poke_numeric),pos = 1,col="firebrick2",cex=0.5)
+ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
+  geom_point()+
+  geom_label_repel(aes(label = variable))+
+  geom_hline(yintercept=0)
 ```
 
