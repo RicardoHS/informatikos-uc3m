@@ -32,3 +32,16 @@ colnames(rts) <- c("Count", "ms", "TotalTime")
 
 
 ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
+
+
+
+## all plots
+sort_retweet_times = lapply(retweet_times, sort)
+sort_cumsum_retweet_times = lapply(sort_retweet_times, diff) %>% lapply(as.numeric, units='secs') %>% lapply(cumsum) 
+max_list_length = max(unlist(lapply(sort_cumsum_retweet_times, length)))
+lines = matrix(0, length(sort_cumsum_retweet_times), max_list_length)
+for(row in 1:length(sort_cumsum_retweet_times)){
+  lines[row,] = c(unlist(sort_cumsum_retweet_times[row]), rep(0,max_list_length-length(unlist(sort_cumsum_retweet_times[row]))))
+}
+# each line is the time between retweets of a tweet. Plotted every tweet
+matplot(t(lines), type = "l") # maybe less lines per plot is better
