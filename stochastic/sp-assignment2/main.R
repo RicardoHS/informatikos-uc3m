@@ -48,13 +48,13 @@ matplot(t(lines), type = "l") # maybe less lines per plot is better
 
 
 
-lambda <- function(t, theta) theta*exp(theta*t)
+lambda <- function(t) theta*exp(theta*t)
 
-theta = 0.01
+theta = 0.005
 n <- 1000
 points = numeric(n)
-for (i in c(1:n)){
-  points[i] <- lambda(i, theta)
+for (t in c(1:n)){
+  points[t] <- integrate(lambda, 0, t)$value
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
