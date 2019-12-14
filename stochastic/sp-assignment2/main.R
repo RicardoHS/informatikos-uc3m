@@ -51,9 +51,11 @@ matplot(t(lines), type = "l") # maybe less lines per plot is better
 lambda <- function(t, theta) theta*exp(theta*t)
 
 theta = 0.01
-points = numeric(1000)
-for (i in c(1:1000)){
+n <- 1000
+points = numeric(n)
+for (i in c(1:n)){
   points[i] <- lambda(i, theta)
 }
 
-plot(points)
+points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount)
