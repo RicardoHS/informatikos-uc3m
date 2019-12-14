@@ -59,3 +59,10 @@ for (t in c(1:n)){
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
 ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount)
+
+
+simulateNHPP <- function(f, time) {
+
+}
+process <- simulateNHPP(lambda, 1000)
+hist(process)
