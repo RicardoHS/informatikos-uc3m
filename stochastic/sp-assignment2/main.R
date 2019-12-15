@@ -18,40 +18,55 @@ n_retweets <- map_dbl(retweet_times, length)
 
 
 # Descriptive Analysis
-which(n_retweets==max(n_retweets))
 
-times <- numeric(length(retweet_times[[54]]))
-times[1] <- difftime(retweet_times[[54]][1], tweets[54,]$created_at, units = "secs")[[1]]
-
-for (i in 1:(length(retweet_times[[54]]) - 1)){
-  times[i+1] <- difftime(retweet_times[[54]][i], retweet_times[[54]][i+1], units = "secs")[[1]]
+retweet_times = lapply(retweet_times, sort)
+retweet_difference <- lapply(retweet_times, diff) %>% lapply(as.numeric, units='mins')
+for (i in 1:length(retweet_times)){
+  if (n_retweets[i] > 0) {
+    first_rt <- difftime(retweet_times[[i]][1], tweets[i,]$created_at, units = "mins")[[1]]
+    retweet_difference[[i]] <- append(retweet_difference[[i]], first_rt, 0)
+  }
 }
-
-rts <- as.data.frame(cbind(c(1:length(retweet_times[[54]])), times, cumsum(times)))
-colnames(rts) <- c("Count", "ms", "TotalTime")
+cumsum_retweet_times =  retweet_difference %>% lapply(cumsum)
 
 
+# Plot for Max RT
+maximum_RT <- max(n_retweets)
+which(n_retweets == maximum_RT)
+
+rts <- as.data.frame(cbind(c(1:n_retweets[54]), retweet_difference[[54]], cumsum_retweet_times[[54]]))
+colnames(rts) <- c("Count", "Min", "TotalTime")
 ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
 
 
+# Pot Sample Tweets
+indexes <- sample(c(1:200), 20)
+rts <- as.data.frame(cbind(c(1:n_retweets[i]), retweet_difference[[i]], cumsum_retweet_times[[i]]))
+colnames(rts) <- c("Count", "Min", "TotalTime")
+plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 1000), ylim = c(0,95))
+for (i in indexes[-1]){
+  if(n_retweets[i] > 0) {
+    rts <- as.data.frame(cbind(c(1:n_retweets[i]), retweet_difference[[i]], cumsum_retweet_times[[i]]))
+    colnames(rts) <- c("Count", "Min", "TotalTime")
+    lines(rts$TotalTime, rts$Count)
+  }
+}
 
-## all plots
-sort_retweet_times = lapply(retweet_times, sort)
-sort_cumsum_retweet_times = lapply(sort_retweet_times, diff) %>% lapply(as.numeric, units='secs') %>% lapply(cumsum)
-max_list_length = max(unlist(lapply(sort_cumsum_retweet_times, length)))
-lines = matrix(0, length(sort_cumsum_retweet_times), max_list_length)
-for(row in 1:length(sort_cumsum_retweet_times)){
-  lines[row,] = c(unlist(sort_cumsum_retweet_times[row]), rep(0,max_list_length-length(unlist(sort_cumsum_retweet_times[row]))))
+
+## All Plots
+lines = matrix(0, length(cumsum_retweet_times), maximum_RT)
+for(row in 1:length(cumsum_retweet_times)){
+  lines[row,] = c(cumsum_retweet_times[[row]], rep(0,maximum_RT-length(cumsum_retweet_times[[row]])))
 }
 # each line is the time between retweets of a tweet. Plotted every tweet
 matplot(t(lines), type = "l") # maybe less lines per plot is better
 
 
 
-lambda <- function(t) theta*exp(theta*t)
+lambda <- function(t) theta*exp(-theta*t)
 
-theta = 0.005
-n <- 1000
+theta = 0.0045
+n <- 1200
 points = numeric(n)
 for (t in c(1:n)){
   points[t] <- integrate(lambda, 0, t)$value
@@ -73,5 +88,5 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
   return(sort(X))
 }
-times <- simulateNHPP(lambda, 1000, 20)
+times <- simulateNHPP(lambda, 1000, 0.7)
 hist(times)
