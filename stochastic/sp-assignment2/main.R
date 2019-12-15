@@ -1,14 +1,12 @@
 library(tidyverse)
 library(rtweet)
 
-# Data downloading
-# tweets <- get_timeline(user="elmundoes",n=3200)
-# retweet_data <- map(tweets$status_id, get_retweets)
-# retweet_data <- vector(mode = "list", length = 200)
-# for(i in 1:200){
-#   if(i %% 74 == 0) Sys.sleep(905)
-#   retweet_data[[i]] <- get_retweets(tweets[i,]$status_id)
-# }
+#tweets <- get_timeline(user="rosaliavt",n=3200)
+#retweet_data <- vector(mode = "list", length = 200)
+#for(i in 0:200){
+#  if(i %% 74 == 0) Sys.sleep(905)
+#  retweet_data[[i]] <- get_retweets(tweets[i,]$status_id)
+#}
 
 tweets <- readRDS("data/tweets-elmundo.rds")
 retweet_data <- readRDS("data/retweet_data.rds")
@@ -32,9 +30,9 @@ cumsum_retweet_times =  retweet_difference %>% lapply(cumsum)
 
 # Plot for Max RT
 maximum_RT <- max(n_retweets)
-which(n_retweets == maximum_RT)
+index <- which(n_retweets == maximum_RT)
 
-rts <- as.data.frame(cbind(c(1:n_retweets[54]), retweet_difference[[54]], cumsum_retweet_times[[54]]))
+rts <- as.data.frame(cbind(c(1:n_retweets[index]), retweet_difference[[index]], cumsum_retweet_times[[index]]))
 colnames(rts) <- c("Count", "Min", "TotalTime")
 ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
 
