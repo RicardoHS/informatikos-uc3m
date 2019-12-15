@@ -11,7 +11,6 @@
 \usepackage{caption}
 \usemintedstyle[python]{manni}
 \usemintedstyle[R]{manni}
-
 \usepackage{todonotes}
 
 \title{\vspace{-8ex} \huge \bfseries Stochastic Processes\\
@@ -30,21 +29,37 @@
 \section{Exercise 2}
 \subsection*{Question a}
 \todo[inline]{Revisar solucion, no estoy 100\% seguro de que el infinitesimal generator sea tan sencillo de obtener...}
-The process $\{\bm{X}_t, \ t\geq 0\}$ is a Homogeneous Poisson process, as we are told that the number of costumers in the system at time $t$ follows a Poisson distribution with rate $\lambda t$. 
-We also know that the rate $\lambda$ is constant, so the \emph{increments} are stationary and independent.
-It is not specified in the problem, but in order for the process to be a Poisson Process we also require that $X_0 = 0$.
+The process $\bm{X} = \{X_t, \ t\geq 0\}$ is a continuous time Markov chain, as we are told that:
+\begin{itemize}
+	\item The customers arrive according ot a Poisson distribution with rate $\lambda$.
+	\item Service times have an exponential distribution with rate $\mu$.
+	\item There is no limit to the number of people in the system at any given time.
+\end{itemize}
 
-The \emph{state space} of our process is then $\{0\} \cup \mathbb{N}$. The infinitesimal generator of a Poisson process is
+The \emph{state space} of our process is then $\{0\} \cup \mathbb{N}$. 
+To obtain the infinitesimal generator, we observe that if $X_t = i$, then the only two possible transitions are into state $i+1$ if another customer joins the line and to state $i-1$ if a cashier finishes servicing its customer.
+
+We know that the time until a new arrival takes place is just the interarrival time of a Poisson process, so it is exponentially distributed with rate $\lambda$.
+
+The time until a customer is serviced is the minimum between the time it takes cashier $1$ to service its customer and the time it takes cashier $2$ to service theirs. 
+This is the minimum of two exponentially distributed random variables, so it is also exponential with rate $\mu + \mu = 2\mu$.
 \[
 Q = \begin{bmatrix}
-	-\lambda & \lambda & 0 & 0 & \dots \\
-	0 & -\lambda &\lambda  & 0 & \dots \\
-	0 & 0 & -\lambda &\lambda & \dots \\
-	0 & 0 & 0 & -\lambda & \dots \\
-	\vdots &\vdots &\vdots &\vdots & \ddots \\
+	-\lambda & \lambda  & 0        & 0        & \dots  \\
+	\mu       & -(\lambda+\mu) & \lambda  & 0        & \dots  \\
+	0        & -2\mu        & -(\lambda+2\mu) & \lambda  & \dots  \\
+	0        & 0        & -2\mu        & (-\lambda + 2\mu) & \dots  \\
+	\vdots   & \vdots   & \vdots   & \vdots   & \ddots
 \end{bmatrix},
 \]
-as can be seen in example 5.4 of the course slides.
+The only rows that are different from the rest are the first and second ones.
+In the case of the first one, this is because we can only go from state $X_t = 0$ to $X_t = 1$ if a customer arrives to the queue, and there is no customer to be serviced so that he can leave the queue.
+
+In the case of the second row, now there is only one customer in the system and so he can only be serviced by a single cashier. This means that the chain will jump to state $0$ with rate $\mu$ if the cashier finishes servicing the customer or to state $2$ with rate $\lambda$ if another customer arrives.
+
+From rows $3$ onward, there is now at least two customers in the system, and as there are two cashiers the rate at which any one customer exits the system is the minimum between the time it takes the two cashiers to service their customer, which is exponentially distributed with rate $2\mu$ as we have explained previously.
+Of course, customers can keep arriving at rate $\lambda$ as there is no limit to the amount of customers in the system.
+
 
 \subsection*{Question b}
 
