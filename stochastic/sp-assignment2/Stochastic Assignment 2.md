@@ -14,12 +14,16 @@ Knowing that, as stated in Section 6.7 of Dobrow RP *Introduction to Stochastic 
 
 We can model the number of retweets (counting process) with a nonhomogeneous process with intensity function $\lambda(t) = \theta e^{-\theta t}$.
 
-
-
 ## 1C
 
-Since nonhomogeneous Poisson processes expected values follow a Poisson distribution such that $\mathbb{E}[N_t] = \int^t_0\lambda(x)dx$ we can, for any time interval, simulate data for any given process.
 
-As stated in section 11.5.1 of Ross, Sheldon _Introduction To Probability Models_
+
+As stated in section 11.5.1 of Ross, Sheldon _Introduction To Probability Models_, given $n$ events of a nonhomogeneous Poisson process by time $T$ the $n$ event times are independent with a common density function
+
+$$
+f(s) = \frac{\lambda(s)}{m(t)},\ 0<s<T, \quad m(T) = \int^T_0\lambda(s)ds
+$$
+
+By simulating $N(T)$, the number of events by time T, and then simulating $N(T)$ random variables from the previous density function we can generate a NHPP.
 
 
