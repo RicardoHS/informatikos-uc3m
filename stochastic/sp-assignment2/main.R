@@ -1,13 +1,14 @@
 library(tidyverse)
 library(rtweet)
 
-#tweets <- get_timeline(user="rosaliavt",n=3200)
+#tweets <- get_timeline(user="realmadrid",n=3200)
 #retweet_data <- vector(mode = "list", length = 200)
-#for(i in 0:200){
+#for(i in 30:230){
 #  if(i %% 74 == 0) Sys.sleep(905)
 #  retweet_data[[i]] <- get_retweets(tweets[i,]$status_id)
 #}
-
+#saveRDS(tweets, "data/tweets-rm")
+#saveRDS(retweet_data, "data/retweet-rm")
 tweets <- readRDS("data/tweets-elmundo.rds")
 retweet_data <- readRDS("data/retweet_data.rds")
 
@@ -38,8 +39,8 @@ ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
 
 
 # Pot Sample Tweets
-indexes <- sample(c(1:200), 20)
-rts <- as.data.frame(cbind(c(1:n_retweets[i]), retweet_difference[[i]], cumsum_retweet_times[[i]]))
+# indexes <- sample(c(1:200), 200)
+rts <- as.data.frame(cbind(c(1:n_retweets[1]), retweet_difference[[1]], cumsum_retweet_times[[1]]))
 colnames(rts) <- c("Count", "Min", "TotalTime")
 plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 1000), ylim = c(0,95))
 for (i in indexes[-1]){
