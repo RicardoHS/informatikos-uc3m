@@ -43,13 +43,14 @@ We know that the time until a new arrival takes place is just the interarrival t
 The time until a customer is serviced is the minimum between the time it takes cashier $1$ to service its customer and the time it takes cashier $2$ to service theirs. 
 This is the minimum of two exponentially distributed random variables, so it is also exponential with rate $\mu + \mu = 2\mu$.
 \[
-Q = \begin{bmatrix}
-	-\lambda & \lambda  & 0        & 0        & \dots  \\
-	\mu       & -(\lambda+\mu) & \lambda  & 0        & \dots  \\
-	0        & -2\mu        & -(\lambda+2\mu) & \lambda  & \dots  \\
-	0        & 0        & -2\mu        & (-\lambda + 2\mu) & \dots  \\
-	\vdots   & \vdots   & \vdots   & \vdots   & \ddots
-\end{bmatrix},
+Q = \bordermatrix{% 
+	 & 0 & 1 & 2 & 3 & \dots \cr
+	0& -\lambda & \lambda  & 0        & 0        & \dots  \cr
+	1 & \mu       & -(\lambda+\mu) & \lambda  & 0        & \dots  \cr
+	2& 0        & 2\mu        & -(\lambda+2\mu) & \lambda  & \dots  \cr
+	3 &0        & 0        & 2\mu        & (-\lambda + 2\mu) & \dots  \cr
+	\vdots & \vdots   & \vdots   & \vdots   & \vdots   & \ddots
+},
 \]
 The only rows that are different from the rest are the first and second ones.
 In the case of the first one, this is because we can only go from state $X_t = 0$ to $X_t = 1$ if a customer arrives to the queue, and there is no customer to be serviced so that he can leave the queue.
