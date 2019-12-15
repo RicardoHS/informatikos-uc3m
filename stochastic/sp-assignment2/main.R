@@ -75,7 +75,7 @@ for (t in c(1:n)){
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
-ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount) + geom_line(data = foo_rts, aes(x=TotalTime, y=Count))
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime, y=Count, color='Real'))
 
 
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
