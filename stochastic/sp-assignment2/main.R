@@ -61,16 +61,21 @@ points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
 ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount)
 
 
-simulateNHPP <- function(intensity_function, time) {
+simulateNHPP <- function(intensity_function, time, lambda_bound) {
   f <- function(t) integrate(intensity_function, 0, t)
   density_function <- function(t) intensity_function(t) / f(time)$value
 
   N_tmax <- rpois(1, f(time)$value)
-  process <- numeric(0)
-  for (t in 1:N_tmax){
-    process[t] <- integrate(density_function, 0, t)$value
+  X <- numeric(0)
+
+  for (t in 1:time){
+    u <- runif(2)
+    accept <- u[2] <= intensity_function(time*u[1]) / lambda_bound
+    if (accept)
+      X <- c(X, time * u[1])
   }
-  process
+
+  X
 }
-process <- simulateNHPP(lambda, 1000)
+process <- simulateNHPP(lambda, 1000, 10)
 hist(process)
