@@ -16,8 +16,6 @@ We can model the number of retweets (counting process) with a nonhomogeneous pro
 
 ## 1C
 
-
-
 As stated in section 11.5.1 of Ross, Sheldon _Introduction To Probability Models_, given $n$ events of a nonhomogeneous Poisson process by time $T$ the $n$ event times are independent with a common density function
 
 $$
@@ -26,4 +24,4 @@ $$
 
 By simulating $N(T)$, the number of events by time T, and then simulating $N(T)$ random variables from the previous density function we can generate a NHPP.
 
-
+**COPIAR BONITO REJECTION METHOD**
