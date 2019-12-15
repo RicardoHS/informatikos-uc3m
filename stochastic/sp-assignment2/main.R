@@ -18,34 +18,34 @@ n_retweets <- map_dbl(retweet_times, length)
 
 
 # Descriptive Analysis
-which(n_retweets==max(n_retweets))
 
-times <- numeric(length(retweet_times[[54]]))
-retweets <- rev(retweet_times[[54]])
-times[1] <- difftime(tweets[54,]$created_at, retweets[1], units = "min")[[1]]
-
-for (i in 1:(length(retweets) - 1)){
-  times[i+1] <- difftime(retweets[i+1], retweets[i], units = "min")[[1]]
+retweet_times = lapply(retweet_times, sort)
+retweet_difference <- lapply(retweet_times, diff) %>% lapply(as.numeric, units='mins')
+for (i in 1:length(retweet_times)){
+  if (length(retweet_times[[i]] > 0)) {
+    first_rt <- difftime(retweet_times[[i]][1], tweets[i,]$created_at, units = "mins")[[1]]
+    retweet_difference[[i]] <- append(retweet_difference[[i]], first_rt, 0)
+  }
 }
-
-rts <- as.data.frame(cbind(c(1:length(retweets)), times, cumsum(times)))
-colnames(rts) <- c("Count", "ms", "TotalTime")
+cumsum_retweet_times =  retweet_difference %>% lapply(cumsum)
 
 
+# Plot for Max RT
+maximum_RT <- max(n_retweets)
+which(n_retweets == maximum_RT)
+
+rts <- as.data.frame(cbind(c(1:length(retweet_times[[54]])), retweet_difference[[54]], cumsum_retweet_times[[54]]))
+colnames(rts) <- c("Count", "Min", "TotalTime")
 ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
 
 
-
-## all plots
-sort_retweet_times = lapply(retweet_times, sort)
-sort_cumsum_retweet_times = lapply(sort_retweet_times, diff) %>% lapply(as.numeric, units='secs') %>% lapply(cumsum)
-max_list_length = max(unlist(lapply(sort_cumsum_retweet_times, length)))
-lines = matrix(0, length(sort_cumsum_retweet_times), max_list_length)
-for(row in 1:length(sort_cumsum_retweet_times)){
-  lines[row,] = c(unlist(sort_cumsum_retweet_times[row]), rep(0,max_list_length-length(unlist(sort_cumsum_retweet_times[row]))))
+## All Plots
+lines = matrix(0, length(cumsum_retweet_times), maximum_RT)
+for(row in 1:length(cumsum_retweet_times)){
+  lines[row,] = c(cumsum_retweet_times[[row]], rep(0,maximum_RT-length(cumsum_retweet_times[[row]])))
 }
-# each line is the time between retweets of a tweet. Plotted every tweet
-matplot(t(lines), type = "l") # maybe less lines per plot is better
+
+matplot(lines, n_retweets, type = "l")
 
 
 
