@@ -44,15 +44,15 @@ lines = matrix(0, length(cumsum_retweet_times), maximum_RT)
 for(row in 1:length(cumsum_retweet_times)){
   lines[row,] = c(cumsum_retweet_times[[row]], rep(0,maximum_RT-length(cumsum_retweet_times[[row]])))
 }
+# each line is the time between retweets of a tweet. Plotted every tweet
+matplot(t(lines), type = "l") # maybe less lines per plot is better
 
-matplot(lines, n_retweets, type = "l")
 
 
+lambda <- function(t) theta*exp(-theta*t)
 
-lambda <- function(t) theta*exp(theta*t)
-
-theta = 0.005
-n <- 1000
+theta = 0.0045
+n <- 1200
 points = numeric(n)
 for (t in c(1:n)){
   points[t] <- integrate(lambda, 0, t)$value
@@ -74,5 +74,5 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
   return(sort(X))
 }
-times <- simulateNHPP(lambda, 1000, 20)
+times <- simulateNHPP(lambda, 1000, 0)
 hist(times)
