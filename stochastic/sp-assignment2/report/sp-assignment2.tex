@@ -1,0 +1,51 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{amsmath,amssymb,amsthm,amsfonts,graphicx,float,fullpage,booktabs,bm} 
+\usepackage[colorlinks,citecolor=blue,bookmarks=true]{hyperref}
+\hypersetup{linkcolor=blue}
+\usepackage{cleveref}
+% Code listings
+\usepackage{minted}
+\usepackage{caption}
+\usemintedstyle[python]{manni}
+\usemintedstyle[R]{manni}
+
+\usepackage{todonotes}
+
+\title{\vspace{-8ex} \huge \bfseries Stochastic Processes\\
+	\LARGE \normalfont \textsc{Assignment Two} \vspace{-2ex}}
+\author{\bfseries Santiago Alfonso Raposo Briceño - 100414456 \\
+	\bfseries Javier Martínez Llamas - 100392684\\
+	\bfseries Ricardo Hortelano Sánchez - 100418220}
+\date{\vspace{-5ex}} % Remove space where date would be.
+
+\begin{document}
+	\maketitle
+	\hrule
+
+\section{Exercise 1}
+
+\section{Exercise 2}
+\subsection*{Question a}
+\todo[inline]{Revisar solucion, no estoy 100\% seguro de que el infinitesimal generator sea tan sencillo de obtener...}
+The process $\{\bm{X}_t, \ t\geq 0\}$ is a Homogeneous Poisson process, as we are told that the number of costumers in the system at time $t$ follows a Poisson distribution with rate $\lambda t$. 
+We also know that the rate $\lambda$ is constant, so the \emph{increments} are stationary and independent.
+It is not specified in the problem, but in order for the process to be a Poisson Process we also require that $X_0 = 0$.
+
+The \emph{state space} of our process is then $\{0\} \cup \mathbb{N}$. The infinitesimal generator of a Poisson process is
+\[
+Q = \begin{bmatrix}
+	-\lambda & \lambda & 0 & 0 & \dots \\
+	0 & -\lambda &\lambda  & 0 & \dots \\
+	0 & 0 & -\lambda &\lambda & \dots \\
+	0 & 0 & 0 & -\lambda & \dots \\
+	\vdots &\vdots &\vdots &\vdots & \ddots \\
+\end{bmatrix},
+\]
+as can be seen in example 5.4 of the course slides.
+
+\subsection*{Question b}
+
+\end{document}
