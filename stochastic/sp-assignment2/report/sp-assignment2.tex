@@ -1,0 +1,84 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{amsmath,amssymb,amsthm,amsfonts,graphicx,float,fullpage,booktabs,bm} 
+\usepackage[colorlinks,citecolor=blue,bookmarks=true]{hyperref}
+\hypersetup{linkcolor=blue}
+\usepackage{cleveref}
+% Code listings
+\usepackage{minted}
+\usepackage{caption}
+\usemintedstyle[python]{manni}
+\usemintedstyle[R]{manni}
+\usepackage{todonotes}
+
+\title{\vspace{-8ex} \huge \bfseries Stochastic Processes\\
+	\LARGE \normalfont \textsc{Assignment Two} \vspace{-2ex}}
+\author{\bfseries Santiago Alfonso Raposo Briceño - 100414456 \\
+	\bfseries Javier Martínez Llamas - 100392684\\
+	\bfseries Ricardo Hortelano Sánchez - 100418220}
+\date{\vspace{-5ex}} % Remove space where date would be.
+
+\begin{document}
+	\maketitle
+	\hrule
+
+\section{Exercise 1}
+
+\section{Exercise 2}
+\subsection*{Question a}
+The process $\bm{X} = \{X_t, \ t\geq 0\}$ is a continuous time Markov chain, as we are told that:
+\begin{itemize}
+	\item The customers arrive according ot a Poisson distribution with rate $\lambda$.
+	\item Service times have an exponential distribution with rate $\mu$.
+	\item There is no limit to the number of people in the system at any given time.
+\end{itemize}
+
+The \emph{state space} of our process is then $\{0\} \cup \mathbb{N}$. 
+To obtain the infinitesimal generator, we observe that if $X_t = i$, then the only two possible transitions are into state $i+1$ if another customer joins the line and to state $i-1$ if a cashier finishes servicing its customer.
+
+We know that the time until a new arrival takes place is just the interarrival time of a Poisson process, so it is exponentially distributed with rate $\lambda$.
+
+The time until a customer is serviced is the minimum between the time it takes cashier $1$ to service its customer and the time it takes cashier $2$ to service theirs. 
+This is the minimum of two exponentially distributed random variables, so it is also exponential with rate $\mu + \mu = 2\mu$.
+\[
+Q = \bordermatrix{% 
+	 & 0 & 1 & 2 & 3 & \dots \cr
+	0& -\lambda & \lambda  & 0        & 0        & \dots  \cr
+	1 & \mu       & -(\lambda+\mu) & \lambda  & 0        & \dots  \cr
+	2& 0        & 2\mu        & -(\lambda+2\mu) & \lambda  & \dots  \cr
+	3 &0        & 0        & 2\mu        & (-\lambda + 2\mu) & \dots  \cr
+	\vdots & \vdots   & \vdots   & \vdots   & \vdots   & \ddots
+},
+\]
+The only rows that are different from the rest are the first and second ones.
+In the case of the first one, this is because we can only go from state $X_t = 0$ to $X_t = 1$ if a customer arrives to the queue, and there is no customer to be serviced so that he can leave the queue.
+
+In the case of the second row, now there is only one customer in the system and so he can only be serviced by a single cashier. This means that the chain will jump to state $0$ with rate $\mu$ if the cashier finishes servicing the customer or to state $2$ with rate $\lambda$ if another customer arrives.
+
+From rows $3$ onwards, there is now at least two customers in the system, and as there are two cashiers the rate at which any one customer exits the system is the minimum between the time it takes the two cashiers to service their customer, which is exponentially distributed with rate $2\mu$ as we have explained previously.
+Of course, customers can keep arriving at rate $\lambda$ as there is no limit to the amount of customers in the system.
+
+\subsection*{Question b}
+We know from the result in slide 21 of the continuous time Markov chain topic that the stationary distributions satisfies that $\bm{\pi}Q = 0$.
+To find the stationary distribution we have to look for $\pi$ such that $\pi_i q_{ij} = \pi_j q_{ji}$.
+
+A general expression for the elements $\pi_k, \ k\geq 1$ in terms of $\pi_0$ is the following:
+\[
+	\pi_k = \pi_0\left(\frac{\lambda}{\mu}\right)^k \frac{1}{2^{k-1}}
+\]
+
+We need now a value for $\pi_0$, which we can obtain from the fact that the sum of $\bm{\pi}$ is $1$.
+\begin{align*}
+	\pi_0 + \sum_{k \geq 1}	\pi_0\left(\frac{\lambda}{\mu}\right)^k \frac{1}{2^{k-1}} = 1 \Rightarrow \pi_0 = 1 - \sum_{k \geq 1}	\pi_0\left(\frac{\lambda}{\mu}\right)^k \frac{1}{2^{k-1}}
+\end{align*}
+\todo[inline]{Obtain the value for this sum? Ask Ana perhaps. We could also copy the result from Dobrow 7.6}
+
+The long term expected number of people in the system can be obtained from Little's formula, which states that 
+\[
+	L = \lambda W
+\]
+Where $L$ is the long term average number of costumers in the system, $W$ is the long term average time of each customer in the system and $\lambda$ is the arrival rate (Dobrow 7.6).
+
+\end{document}
