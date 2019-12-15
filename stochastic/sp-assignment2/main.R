@@ -9,8 +9,8 @@ library(rtweet)
 #}
 #saveRDS(tweets, "data/tweets-rm")
 #saveRDS(retweet_data, "data/retweet-rm")
-tweets <- readRDS("data/tweets-elmundo.rds")
-retweet_data <- readRDS("data/retweet_data.rds")
+tweets <- readRDS("data/tweets-rm")
+retweet_data <- readRDS("data/retweet-rm")
 
 retweet_times <- map(retweet_data, "created_at")
 n_retweets <- map_dbl(retweet_times, length)
@@ -61,18 +61,21 @@ for(row in 1:length(cumsum_retweet_times)){
 matplot(t(lines), type = "l") # maybe less lines per plot is better
 
 
+scale_01 = function(x){(x-min(x))/(max(x)-min(x))}
+foo_rts = rts
+foo_rts$Count = scale_01(rts$Count)
 
 lambda <- function(t) theta*exp(-theta*t)
 
-theta = 0.0045
-n <- 1200
+theta = 0.00099
+n <- 6107
 points = numeric(n)
 for (t in c(1:n)){
   points[t] <- integrate(lambda, 0, t)$value
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
-ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount)
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount) + geom_line(data = foo_rts, aes(x=TotalTime, y=Count))
 
 
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
