@@ -22,7 +22,7 @@ n_retweets <- map_dbl(retweet_times, length)
 retweet_times = lapply(retweet_times, sort)
 retweet_difference <- lapply(retweet_times, diff) %>% lapply(as.numeric, units='mins')
 for (i in 1:length(retweet_times)){
-  if (length(retweet_times[[i]] > 0)) {
+  if (n_retweets[i] > 0) {
     first_rt <- difftime(retweet_times[[i]][1], tweets[i,]$created_at, units = "mins")[[1]]
     retweet_difference[[i]] <- append(retweet_difference[[i]], first_rt, 0)
   }
@@ -34,9 +34,23 @@ cumsum_retweet_times =  retweet_difference %>% lapply(cumsum)
 maximum_RT <- max(n_retweets)
 which(n_retweets == maximum_RT)
 
-rts <- as.data.frame(cbind(c(1:length(retweet_times[[54]])), retweet_difference[[54]], cumsum_retweet_times[[54]]))
+rts <- as.data.frame(cbind(c(1:n_retweets[54]), retweet_difference[[54]], cumsum_retweet_times[[54]]))
 colnames(rts) <- c("Count", "Min", "TotalTime")
 ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
+
+
+# Pot Sample Tweets
+indexes <- sample(c(1:200), 20)
+rts <- as.data.frame(cbind(c(1:n_retweets[i]), retweet_difference[[i]], cumsum_retweet_times[[i]]))
+colnames(rts) <- c("Count", "Min", "TotalTime")
+plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 1000), ylim = c(0,95))
+for (i in indexes[-1]){
+  if(n_retweets[i] > 0) {
+    rts <- as.data.frame(cbind(c(1:n_retweets[i]), retweet_difference[[i]], cumsum_retweet_times[[i]]))
+    colnames(rts) <- c("Count", "Min", "TotalTime")
+    lines(rts$TotalTime, rts$Count)
+  }
+}
 
 
 ## All Plots
@@ -74,5 +88,5 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
   return(sort(X))
 }
-times <- simulateNHPP(lambda, 1000, 0)
+times <- simulateNHPP(lambda, 1000, 0.7)
 hist(times)
