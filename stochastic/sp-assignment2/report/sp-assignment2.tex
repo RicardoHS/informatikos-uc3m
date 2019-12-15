@@ -28,7 +28,6 @@
 
 \section{Exercise 2}
 \subsection*{Question a}
-\todo[inline]{Revisar solucion, no estoy 100\% seguro de que el infinitesimal generator sea tan sencillo de obtener...}
 The process $\bm{X} = \{X_t, \ t\geq 0\}$ is a continuous time Markov chain, as we are told that:
 \begin{itemize}
 	\item The customers arrive according ot a Poisson distribution with rate $\lambda$.
@@ -57,7 +56,7 @@ In the case of the first one, this is because we can only go from state $X_t = 0
 
 In the case of the second row, now there is only one customer in the system and so he can only be serviced by a single cashier. This means that the chain will jump to state $0$ with rate $\mu$ if the cashier finishes servicing the customer or to state $2$ with rate $\lambda$ if another customer arrives.
 
-From rows $3$ onward, there is now at least two customers in the system, and as there are two cashiers the rate at which any one customer exits the system is the minimum between the time it takes the two cashiers to service their customer, which is exponentially distributed with rate $2\mu$ as we have explained previously.
+From rows $3$ onwards, there is now at least two customers in the system, and as there are two cashiers the rate at which any one customer exits the system is the minimum between the time it takes the two cashiers to service their customer, which is exponentially distributed with rate $2\mu$ as we have explained previously.
 Of course, customers can keep arriving at rate $\lambda$ as there is no limit to the amount of customers in the system.
 
 
