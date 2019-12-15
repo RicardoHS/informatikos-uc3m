@@ -72,7 +72,7 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
       X <- c(X, time * u[1])
   }
 
-  return(X)
+  return(sort(X))
 }
-process <- simulateNHPP(lambda, 1000, 20)
-hist(process)
+times <- simulateNHPP(lambda, 1000, 20)
+hist(times)
