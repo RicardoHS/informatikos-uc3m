@@ -60,7 +60,18 @@ In the case of the second row, now there is only one customer in the system and 
 From rows $3$ onwards, there is now at least two customers in the system, and as there are two cashiers the rate at which any one customer exits the system is the minimum between the time it takes the two cashiers to service their customer, which is exponentially distributed with rate $2\mu$ as we have explained previously.
 Of course, customers can keep arriving at rate $\lambda$ as there is no limit to the amount of customers in the system.
 
-
 \subsection*{Question b}
+We know from the result in slide 21 of the continuous time Markov chain topic that the stationary distributions satisfies that $\bm{\pi}Q = 0$.
+To find the stationary distribution we have to look for $\pi$ such that $\pi_i q_{ij} = \pi_j q_{ji}$.
 
+A general expression for the elements $\pi_k, \ k\geq 1$ in terms of $\pi_0$ is the following:
+\[
+	\pi_k = \pi_0\left(\frac{\lambda}{\mu}\right)^k \frac{1}{2^{k-1}}
+\]
+
+We need now a value for $\pi_0$, which we can obtain from the fact that the sum of $\bm{\pi}$ is $1$.
+\begin{align*}
+	\pi_0 + \sum_{k \geq 1}	\pi_0\left(\frac{\lambda}{\mu}\right)^k \frac{1}{2^{k-1}} = 1 \Rightarrow \pi_0 = 1 - \sum_{k \geq 1}	\pi_0\left(\frac{\lambda}{\mu}\right)^k \frac{1}{2^{k-1}}
+\end{align*}
+\todo[inline]{Obtain the value for this sum? Ask Ana perhaps. We could also copy the result from Dobrow 7.6}
 \end{document}
