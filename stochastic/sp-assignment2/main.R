@@ -62,7 +62,6 @@ ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount)
 
 
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
-  N_tmax <- rpois(1, f(time)$value)
   X <- numeric(0)
 
   while( length(X) <= time){
