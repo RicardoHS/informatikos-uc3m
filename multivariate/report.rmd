@@ -22,7 +22,11 @@ library(MASS)
 library(pracma)
 library(corrplot)
 library(GGally)
+library(factoextra)
+library(ggrepel)
 library(robustbase)
+library(cowplot)
+theme_set(theme_bw())
 ```
 
 ```{r poke, include = FALSE, cache = TRUE}
@@ -35,20 +39,53 @@ poke_long <- poke %>%
     everything(),
     names_to = c("fight", ".value"),
     names_sep = "_"
-  )
+  ) %>% 
+  distinct(Name, .keep_all = T)
 ```
 
 
-# Part 1 - Pre-process the data set for practical analysis.
+# Pre-process the data set for practical analysis.
 
 ## Missing Values
 The only variables with missing values are `poke1_Type.2` and `poke2_Type.2`. Although these values do not exist, they are not considered as actual missing values. Any given pokemon can have up to two types, the second being optional. Therefore, the absence of this second type is treated, not as unrecorded data, but as a type in itself.
 
 Regarding the rest of the dataset, there are no missing values.
 
-## Distribution of Statistics and Outliers
-For some of our plots, we are only interested in the distribution of the variables of the pokemons. Since each observation of our dataset is composed of two pokemon, we have joined the distributions of each of their variables in the dataset `poke_long`. After restructuring the dataset in this way, we can see a box plot of the variables so that we can get a rough idea of their distribution.
+# Distribution of Statistics
 
+### Single Variable Analysis
+For some of our plots and exploratory analysis, we are only interested in the distribution of the variables of the pokemons. Since each observation of our dataset is composed of two pokemon, we have joined the distributions of each of their variables in the dataset `poke_long`
+
+#### Density Plots
+First we can see some density plots of our numerical variables to get some insight into their shape:
+
+```{r}
+poke_long %>% 
+  select_if(is.numeric) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "Statistic",
+    values_to = "Value"
+  ) %>% 
+  # mutate(Value = log(Value)) %>% 
+  ggplot(aes(x = Value, y = ..density..))+ 
+  geom_density(fill = "lightblue")+
+  facet_wrap(~Statistic)+
+  theme_bw()
+```
+
+We can also try to get some insight into the distribution of our numerical variables over the values of our categorical variables by plotting some bar charts.
+
+```{r}
+poke_long %>% 
+  ggplot(aes(x = Generation))+
+  geom_bar()+
+  theme_bw()
+```
+
+We can see that the distribution of the generations of pokemon is not uniform, which might affect the amount of wins for each generation in the fights. We can also check the distribution of the legendary pokemon in our data.
+
+We can also look at a boxplot of our variables to get some more insight into their distributions, as well as letting us see wheter there are any outliers in our data.
 ```{r, cache = TRUE, dependson="poke"}
 poke_long %>% 
   select_if(is.numeric) %>% 
@@ -62,24 +99,39 @@ poke_long %>%
   coord_flip()+
   theme_bw()
 ```
-As we can see, there are some extreme cases atending to the boxplot. Nevertheless, we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
+As we can see, there are some extreme cases present in the boxplot. Nevertheless, we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
 
-Based on our prior knowledge of dataset and its structure, we might wonder whether pokemons labeled as `Legendary` are outliers in the distribution of their statistics. We can check this using a pairplot.
+We know that there are two groups in our dataset, as we have the variable `Legendary` which indicates if a pokemon has that quality. It is also known that legendary pokemon have higher values for their statistics than standard ones, but we might want to check if it is true.
+
+A way we can verify this statement is by looking at a scatter plot matrix and the density of our variables when separated by this categorical variable.
 ```{r, cache=TRUE, dependson="poke", message = F}
 numeric_vars <- poke_long %>% 
   select_if(~is.numeric(.) || is.logical(.))
-# Take a sample of size = 1000 for plots
-numeric_sample <- numeric_vars[sample(nrow(numeric_vars)), ][1:1e3,]
 ggpairs(numeric_vars, aes(color = Legendary))
 ```
-As we can observe, the legendary pokemons have larger values in the variables. This is a good indicative that the legendary pokemons could be outliers.
+Indeed, legendary pokemon seem to have higher values for their variables in general than normal pokemon. This means that we will have to treat legendary pokemon separately for our outlier detection, as otherwise they will be found to be outliers (when they are really just a different group).
 
-In order to check whether these pokemons are actually outliers or if there could be any other type of outliers in our variables, we employ the False Discovery Rate method. First, we calculate the Mahalanobis distance for the numeric variables in our dataset.
+We can also see the difference between legendary and normal pokemon in a parallel coordinates plot.
+```{r, fig.height = 3, cache = T, dependson = "poke"}
+ggparcoord(numeric_vars, groupColumn = "Legendary")+
+  theme_bw()
+```
+
+We can see that legendary pokemon indeed have in general higher values for their stats than normal pokemon, as is to be expected. We might be also interested in seeing if there is any difference between the pokemon from different generations with respect to their statistics, for which we can also use a parallel coordinates plot.
 ```{r}
-n <- nrow(poke)
-p <- ncol(poke)
-poke_x <- poke_long %>% 
+as <- bind_cols(numeric_vars, Generation= poke_long$Generation)
+ggparcoord(as, columns = 1:7, groupColumn = "Generation") + theme_bw()
+```
+We can see that, unlike in the case of legendary pokemon, there does not appear to be any particular generation that stands out among the rest of them.
+
+## Outlier Detection
+In order to check if there are any outliers in our dataset we will first remove the legendary pokemon from consideration. After this, we will employ the false False Discovey Rate Method to check for outliers among the remaining pokemon.
+```{r}
+poke_x <- poke_long %>%
+  filter(Legendary == 0) %>% 
   select_if(is.numeric)
+n <- nrow(poke_x)
+p <- ncol(poke_x)
 mah_poke <- mahalanobis(poke_x, colMeans(poke_x), cov(poke_x))
 plot(sort(mah_poke), main = "Mahalanobis Distance", xlab = "", ylab = "")
 ```
@@ -89,7 +141,8 @@ p_values <- 1 - pchisq(mah_poke, p)
 sort_index <- order(p_values)
 outliers_index <- sort_index[which(p_values[sort_index] < ((1:n)/n*0.01))]
 
-poke_long[outliers_index, ] %>% distinct(Name, .keep_all = T)
+poke_long[outliers_index, ] %>% 
+  dplyr::select(Name)
 ```
 
 As there are indeed some outliers, we can try to compute the Mahalanobis distance again using the robust estimators for the sample covariance matrix.
@@ -107,18 +160,56 @@ sort_index_robust <- order(p_values_robust)
 outliers_index_robust <- 
   sort_index_robust[which(p_values_robust[sort_index_robust] < ((1:n)/n*0.01))]
 
-poke_long[outliers_index, ] %>% distinct(Name, .keep_all = T)
-# Outlier Pokemon
-unique(poke_long[outliers_index, ]$Name)
+poke_long[outliers_index, ] %>% dplyr::select(Name)
 ```
-But indeed we get the same 3 pokemon showing up as outliers: `Chansey`, `Blissey` and `Shuckle`. The reason these 3 show up as outliers is their extreme values of `HP` (for `Chansey` and `Blissey`) and `Defense` and `Sp.Def` (for `Shuckle`).
+We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses.
 
-We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses. This also reinforces the fact that legendary pokemon are not outliers, as neither `Chansey`, `Blissey` nor `Shuckle` are legendary.
+# Principal Component Analysis
 
-Finally, just to further confirm that legendary pokemon have higher values for their statistics, we can observe the difference in a parallel coordinates plot.
-```{r, fig.height = 3, cache = T, dependson = "poke"}
-ggparcoord(numeric_sample, groupColumn = "Legendary")+
-  theme_bw()
+For principal component analysis we will use the whole dataset. Obviously we can only consider the numerical variables in our dataset.
+
+```{r}
+poke_numeric <- select_if(poke, is.numeric) 
+pca <- prcomp(poke_numeric)
+fviz_eig(pca, ncp = 12)
+```
+We can see in this plot that the first two principal components already explain almost half the variance in our dataset. We will now explore the weights of the principal components.
+
+We can plot the weights of the first three principal components to get some insight into our data.
+```{r}
+pca_weights <- as_tibble(pca$rotation, rownames = "variable")
+ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC1))+
+  geom_point()+
+  geom_label_repel(aes(label = variable))+
+  geom_hline(yintercept=0)
+```
+We can see that the weights are all quite high in general. However, the variables related to the first pokemon have bigger values than the ones related to the second one. A possible interpretation of this is **TODO: AÑADIR INTERPRETACION**. 
+
+```{r}
+ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
+  geom_point()+
+  geom_label_repel(aes(label = variable))+
+  geom_hline(yintercept=0)
 ```
 
-Therefore, we can see that even though legendary pokemon have generally higher values for their statistics, the actual "outliers" are not legendary pokemon. The high values we see in this plot for `HP`, `Def` and `Sp.Def` are the pokemon we previously found to be outliers, `Chansey`, `Blissey` and `Shuckle`.
+```{r}
+ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC3))+
+  geom_point()+
+  geom_label_repel(aes(label = variable))+
+  geom_hline(yintercept=0)
+```
+
+
+```{r, warning=F, message = F}
+ggplot(as.data.frame(pca$rotation[,1:2]), 
+       aes(x=0,y=0,
+           xend=PC1, 
+           yend=PC2, 
+           label=rownames(as.data.frame(pca$rotation[,1:2]))))+ 
+  geom_segment( arrow = arrow(length = unit(0.1,"cm")))+
+  coord_cartesian(xlim=-1:1, ylim=-1:1)+
+  geom_text(aes(x = PC1, y = PC2))+
+  coord_flip()
+```
+
+# Factor Analysis
