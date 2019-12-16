@@ -91,7 +91,7 @@ opt_func = function(theta, n, fun_bX, fun_bY) {
   for (t in c(1:n)){
     points[t] <- integrate(lambda, 0, t)$value
   }
-  
+
   #calculate area between lines
   #fun_aY = points
   #fun_bX = foo_rts$TotalTime-foo_rts_min
@@ -102,9 +102,9 @@ opt_func = function(theta, n, fun_bX, fun_bY) {
   line_min = pmin(line_a, line_b)
   # value to minimize
   loss = sum(line_max-line_min)
-  
+
   return(loss)
-  
+
 }
 o = optimize(opt_func, foo_rts_max-foo_rts_min, foo_rts$TotalTime-foo_rts_min, foo_rts$Count, interval=c(0.0005, 0.005))
 print(o$minimum)
@@ -133,5 +133,5 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
   return(sort(X))
 }
-times <- simulateNHPP(lambda, 10000, 0.7)
+times <- simulateNHPP(lambda, 2000, 0.7)
 hist(times)
