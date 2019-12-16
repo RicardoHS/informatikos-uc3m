@@ -39,11 +39,10 @@ ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
 
 
 # Pot Sample Tweets
-# indexes <- sample(c(1:200), 200)
-rts <- as.data.frame(cbind(c(1:n_retweets[1]), retweet_difference[[1]], cumsum_retweet_times[[1]]))
+rts <- as.data.frame(cbind(c(1:maximum_RT), retweet_difference[[index]], cumsum_retweet_times[[index]]))
 colnames(rts) <- c("Count", "Min", "TotalTime")
-plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 1000), ylim = c(0,95))
-for (i in indexes[-1]){
+plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 5000), ylim = c(0,95))
+for (i in c(1:200)){
   if(n_retweets[i] > 0) {
     rts <- as.data.frame(cbind(c(1:n_retweets[i]), retweet_difference[[i]], cumsum_retweet_times[[i]]))
     colnames(rts) <- c("Count", "Min", "TotalTime")
