@@ -78,6 +78,44 @@ for (t in c(1:n)){
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
 ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Real'))
 
+############################################################### OPT
+#### get minima theta, minimize area between lines
+opt_func = function(theta, n, fun_bX, fun_bY) {
+  lambda <- function(t) theta*exp(-theta*t)
+  # simulate with theta
+  points = numeric(n)
+  for (t in c(1:n)){
+    points[t] <- integrate(lambda, 0, t)$value
+  }
+  
+  #calculate area between lines
+  #fun_aY = points
+  #fun_bX = foo_rts$TotalTime-foo_rts_min
+  #fun_bY = foo_rts$Count
+  line_a = points # fun_a
+  line_b = approx(fun_bX, fun_bY, n=length(line_a))$y
+  line_max = pmax(line_a, line_b)
+  line_min = pmin(line_a, line_b)
+  # value to minimize
+  loss = sum(line_max-line_min)
+  
+  return(loss)
+  
+}
+o = optimize(opt_func, foo_rts_max-foo_rts_min, foo_rts$TotalTime-foo_rts_min, foo_rts$Count, interval=c(0.0005, 0.005))
+print(o$minimum)
+
+theta = o$minimum
+n <- foo_rts_max-foo_rts_min
+points = numeric(n)
+for (t in c(1:n)){
+  points[t] <- integrate(lambda, 0, t)$value
+}
+
+points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Real'))
+############################################## END OPT
+
 
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
   X <- numeric(0)
