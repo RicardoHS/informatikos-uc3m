@@ -141,7 +141,6 @@ hist(times)
 
 # Exercise 2d ----
 simulate_2d <- function(lambda, mu, k){
-  set.seed(3)
   # Simulation of the arrivals as a Poisson Process
   inter_arrivals <- rexp(k, rate = lambda)
   sn <- cumsum(inter_arrivals)
