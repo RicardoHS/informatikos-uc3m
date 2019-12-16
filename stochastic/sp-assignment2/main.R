@@ -181,3 +181,5 @@ for(i in 2:length(simulation$exit_times)){
 # Probability of overtaking:
 overtakes/length(simulation$exit_times)
 
+# Long run average of customers in the system
+mean(sapply(1:k, simulation$xt))

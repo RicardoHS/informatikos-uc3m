@@ -93,11 +93,31 @@ Then, we can obtain the value for $L$ by calculating the expectation of the stat
 \subsection*{Question d}
 The following code has been used to simulate the process for a given number of customers $k$.
 
-\begin{listing}
-	\inputminted[firstline = 97, lastline = 116]{R}{../main.R}
+\begin{listing}[H]
+	\inputminted[firstline = 143, lastline = 166]{R}{../main.R}
 	\caption{M/M/2 simulation}
 	\label{lst:mm2sim}
 \end{listing}
 
+\subsection*{Question e}
+If two customers arrive every five minutes, this implies a rate $\lambda = \frac{2}{5}$ customers per minute. We also have that $\mathbf{E}\left[ \text{Cashier Serving Time}\right] = 4$. Since it is exponentially distributed, it rate has to be then $\mu = \frac{1}{4}$ customers per minute.
 
+\paragraph{Probability of overtaking}
+We can get an estimate for this probability by calculating a trajectory of the chain, computing the number of overtakes and dividing by the total length of the chain. This has been done in \cref{lst:overtaking-sim}.
+\begin{listing}[H]
+	\inputminted[firstline = 175, lastline = 182]{R}{../main.R}
+	\caption{Overtaking Simulation}
+	\label{lst:overtaking-sim}
+\end{listing}
+With a result of $\hat P(\text{``overtake''}) = 0.4667$.
+
+\paragraph{Long Run Average of people in the system}
+We can perform a similar calculation in this case, just calculate a trajectory for the chain and compute the mean of $X_t$.
+\begin{listing}[H]
+	\inputminted[firstline = 184, lastline = 185]{R}{../main.R}
+	\caption{Long Run Average Simulation}
+	\label{lst:longrun-sim}
+\end{listing}
+Giving an estimated average of $\approx2.5$.
+\todo[inline]{Perform more trajectories and take the sample mean to get a better estimate.}
 \end{document}
