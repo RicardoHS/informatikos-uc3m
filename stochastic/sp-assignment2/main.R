@@ -126,7 +126,7 @@ ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
   X <- numeric(0)
 
-  while( length(X) <= time){
+  for ( t in 1:time){
     u <- runif(2)
     accept <- u[2] <= intensity_function(time*u[1]) / lambda_bound
     if (accept)
@@ -135,5 +135,11 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
   return(sort(X))
 }
-times <- simulateNHPP(lambda, 2000, 0.7)
+
+times <- simulateNHPP(lambda, 20000, 0.0001)
 hist(times)
+length(times)
+
+rts <- data.frame("Retweets"=c(1:length(times)), "Time"=times)
+ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
+
