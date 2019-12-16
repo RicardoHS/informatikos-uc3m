@@ -158,12 +158,26 @@ simulate_2d <- function(lambda, mu, k){
       exit_times[i] <- min(exit_times[(i-2):(i-1)]) + rexp(1, rate = mu)
     }
   }
-  function(t) sum(sn < t) - sum(exit_times < t)
+  list(
+    xt = function(t) sum(sn < t) - sum(exit_times < t),
+    exit_times = exit_times,
+    sn = sn
+  )
 }
-k <- 100
-xt <- simulate_2d(2/5, 1/4, k)
+k <- 1200
+simulation <- simulate_2d(2/5, 1/4, k)
+
+# Plot trajectory
 range <- seq(0, k, by = .01)
-plot(range, sapply(range, xt), type = "l")
+plot(range, sapply(range, simulation$xt), type = "l")
 
-
+# Count number of overtakes present.
+overtakes <- 0
+for(i in 2:length(simulation$exit_times)){
+  if(any(simulation$exit_times[i] < simulation$exit_times[1:(i-1)])){
+    overtakes <- overtakes + 1
+  }
+}
+# Probability of overtaking:
+overtakes/length(simulation$exit_times)
 
