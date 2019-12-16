@@ -50,24 +50,28 @@ for (i in c(1:200)){
   }
 }
 
+######################### Compute mean rt times
 
-## All Plots
-lines = matrix(0, length(cumsum_retweet_times), maximum_RT)
-for(row in 1:length(cumsum_retweet_times)){
-  lines[row,] = c(cumsum_retweet_times[[row]], rep(0,maximum_RT-length(cumsum_retweet_times[[row]])))
+interpolated_tweets = matrix(0, length(retweet_times), length(retweet_times[[index]]))
+for(row in 1:length(retweet_times)){
+  if(!is_empty(cumsum_retweet_times[[row]])){
+    interpolated_tweets[row,] = approx(1:length(cumsum_retweet_times[[row]]), cumsum_retweet_times[[row]], n=96)$y
+  }
 }
-# each line is the time between retweets of a tweet. Plotted every tweet
-matplot(t(lines), type = "l") # maybe less lines per plot is better
+interpolated_tweets = as.data.frame(interpolated_tweets)
+interpolated_tweets = interpolated_tweets[apply(interpolated_tweets[,-1], 1, function(x) !all(x==0)),]
+matplot(t(interpolated_tweets), type = 'l')
+mean_tweet = colSums(interpolated_tweets)/dim(interpolated_tweets)[1]
+mean_tweet_df = data.frame(TotalTime=mean_tweet, Count=1:96)
 
+#########################
 
 scale_01 = function(x){(x-min(x))/(max(x)-min(x))}
-foo_rts = rts
-foo_rts$Count = scale_01(rts$Count)
+foo_rts = mean_tweet_df
+foo_rts$Count = scale_01(foo_rts$Count)
 foo_rts_min = min(foo_rts$TotalTime)
-foo_rts_max = max(points$TotalTime) %>% round()
-
+foo_rts_max = max(foo_rts$TotalTime) %>% round()
 lambda <- function(t) theta*exp(-theta*t)
-
 theta = 0.00099
 n <- foo_rts_max-foo_rts_min
 points = numeric(n)
@@ -129,5 +133,5 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
   return(sort(X))
 }
-times <- simulateNHPP(lambda, 1000, 0.7)
+times <- simulateNHPP(lambda, 10000, 0.7)
 hist(times)
