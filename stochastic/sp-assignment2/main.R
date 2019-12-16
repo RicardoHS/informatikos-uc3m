@@ -63,18 +63,20 @@ matplot(t(lines), type = "l") # maybe less lines per plot is better
 scale_01 = function(x){(x-min(x))/(max(x)-min(x))}
 foo_rts = rts
 foo_rts$Count = scale_01(rts$Count)
+foo_rts_min = min(foo_rts$TotalTime)
+foo_rts_max = max(points$TotalTime) %>% round()
 
 lambda <- function(t) theta*exp(-theta*t)
 
 theta = 0.00099
-n <- 6107
+n <- foo_rts_max-foo_rts_min
 points = numeric(n)
 for (t in c(1:n)){
   points[t] <- integrate(lambda, 0, t)$value
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
-ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime, y=Count, color='Real'))
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Real'))
 
 
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
