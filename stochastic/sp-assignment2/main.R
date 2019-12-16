@@ -91,3 +91,34 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 }
 times <- simulateNHPP(lambda, 1000, 0.7)
 hist(times)
+
+
+# Exercise 2d ----
+simulate_2d <- function(lambda, mu, k){
+  set.seed(3)
+  # Simulation of the arrivals as a Poisson Process
+  inter_arrivals <- rexp(k, rate = lambda)
+  sn <- cumsum(inter_arrivals)
+
+  # Obtain times of people leaving.
+  exit_times <- numeric(k)
+  exit_times[1] <- sn[1] + rexp(1, rate = mu)
+  exit_times[2] <- sn[2] + rexp(1, rate = mu)
+  for(i in 3:length(exit_times)){
+    if(sn[i] > min(exit_times[(i-2):(i-1)])){
+      # If there are free cashiers, he is serviced as he arrives.
+      exit_times[i] <- sn[i] + rexp(1, rate = mu)
+    }else{
+      # Otherwise, he is serviced as soon as a cashier is free
+      exit_times[i] <- min(exit_times[(i-2):(i-1)]) + rexp(1, rate = mu)
+    }
+  }
+  function(t) sum(sn < t) - sum(exit_times < t)
+}
+k <- 100
+xt <- simulate_2d(2/5, 1/4, k)
+range <- seq(0, k, by = .01)
+plot(range, sapply(range, xt), type = "l")
+
+
+
