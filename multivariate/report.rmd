@@ -213,3 +213,70 @@ ggplot(as.data.frame(pca$rotation[,1:2]),
 ```
 
 # Factor Analysis
+First we an explore the correlation of our numerical variables, ordering them to see whethere there are any groups among them:
+
+```{r}
+corrplot(cor(poke_numeric))
+```
+
+We can see quite clearly in the correlation plot that the variables related to pokemon 1 are completely uncorrelated with the ones related to pokemon 2. This makes sense, as they are completely separate pokemon.
+
+We can now calculate the $M$ matrix for the first 5 principal components:
+```{r}
+poke_scaled <- scale(poke_numeric)
+pca_factor <- prcomp(poke_scaled)
+
+r <- 5
+p <- ncol(poke_numeric)
+M <-  pca_factor$rotation[,1:r] %*% diag(pca_factor$sdev[1:r])
+M <- varimax(M)
+M <- loadings(M)[1:ncol(poke_numeric), 1:r]
+```
+
+```{r}
+plot(1:p,M[,1],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights for the first factor")
+abline(h=0)
+text(1:p,M[,1],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
+```
+
+```{r}
+plot(1:p,M[,2],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights for the second factor")
+abline(h=0)
+text(1:p,M[,2],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
+```
+
+```{r}
+plot(1:p,M[,3],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights for the third factor")
+abline(h=0)
+text(1:p,M[,3],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
+```
+```{r}
+plot(1:p,M[,4],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights for the fourth factor")
+abline(h=0)
+text(1:p,M[,4],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
+```
+
+```{r}
+plot(1:p,M[,5],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights for the fifth factor")
+abline(h=0)
+text(1:p,M[,5],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
+```
+
+### Commonalities and Uniqueness
+We can compute the commonalities to see how well each variable is explained by the factors:
+
+```{r}
+comm <- diag(M %*% t(M))
+sort(comm, decreasing = T)
+```
+
+The estimate of the covariance matrix of the errors is given by the following formula, which we will then use to compute the uniqueness of our variables. This will give us an estimate of the unexplained variance present in them.
+```{r}
+sigma_nu <- diag(diag(cov(poke_scaled) - M %*% t(M)))
+uniq <- diag(sigma_nu)
+names(uniq) <- names(comm)
+sort(uniq, decreasing=TRUE)
+```
+
+So we can see that the variables that are better explained by the factors are `poke1_Sp.Def`, `poke2_Defense` and `Poke1_defense`. The ones that are worst explained are `poke2_HP`, `poke1_HP` and `poke2_Attack`.
+
