@@ -31,7 +31,15 @@ i.e. The following sequence of times would define a retweet counting process for
 \textit{1.400000    1.616667    1.716667    1.716667    1.900000    2.616667}
 \end{center}
 
-\textbf{TODO justificar que es Poisson}
+Knowing that, as stated in Section 6.7 of Dobrow RP \textit{Introduction to Stochastic Processes with R}, a nonhomogeneous Poisson process is a counting process $(N_t)_{t\geq0}$ with intensity function $\lambda(t)$ if
+\begin{itemize}
+	\item $N_0 = 0$ 
+	\item For all $t>0$, $N_t$ has a Poisson distribution with mean
+	\[\mathbb{E}[N_t] = \int^t_0\lambda(x)dx\]
+	\item For $0\leq q < r \leq s < t$, $N_r - N_q$ and $N_t - N_s$ are independent random variables.
+\end{itemize}
+
+
 
 \subsection{Assuming you can model the number of retweets by time as a non-homogeneous Poisson process with intensity function $ \lambda (t) = \theta e^{-\theta t},\ t>0$, graphically explore possible values of $\theta$ and choose the one that best fit your data. Explain all the considerations you make.}
 
