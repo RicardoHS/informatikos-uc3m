@@ -102,22 +102,25 @@ The following code has been used to simulate the process for a given number of c
 \subsection*{Question e}
 If two customers arrive every five minutes, this implies a rate $\lambda = \frac{2}{5}$ customers per minute. We also have that $\mathbf{E}\left[ \text{Cashier Serving Time}\right] = 4$. Since it is exponentially distributed, it rate has to be then $\mu = \frac{1}{4}$ customers per minute.
 
-\paragraph{Probability of overtaking}
-We can get an estimate for this probability by calculating a trajectory of the chain, computing the number of overtakes and dividing by the total length of the chain. This has been done in \cref{lst:overtaking-sim}.
+
+\textbf{Probability of overtaking:} We can get an estimate for this probability by calculating a trajectory of the chain, computing the number of overtakes and dividing by the total length of the chain. This has been done in \cref{lst:overtaking-sim}, where we have performed this procedure a large number of times then taken the average in order to obtain a better estimate.
 \begin{listing}[H]
-	\inputminted[firstline = 175, lastline = 182]{R}{../main.R}
+	\inputminted[firstline = 175, lastline = 187]{R}{../main.R}
 	\caption{Overtaking Simulation}
 	\label{lst:overtaking-sim}
 \end{listing}
-With a result of $\hat P(\text{``overtake''}) = 0.4667$.
+The resulting estimate for the probability of overtaking is $0.4717$.
+\todo[inline]{Add comparison to section c}
 
-\paragraph{Long Run Average of people in the system}
-We can perform a similar calculation in this case, just calculate a trajectory for the chain and compute the mean of $X_t$.
+\textbf{Long Run Average of people in the system}
+We can perform a similar calculation in this case, just calculate a trajectory for the chain and compute the mean of $X_t$. This has been done a large number of times, and our final estimate is the mean of the results.
 \begin{listing}[H]
-	\inputminted[firstline = 184, lastline = 185]{R}{../main.R}
+	\inputminted[firstline = 189, lastline = 195]{R}{../main.R}
 	\caption{Long Run Average Simulation}
 	\label{lst:longrun-sim}
 \end{listing}
-Giving an estimated average of $\approx2.5$.
-\todo[inline]{Perform more trajectories and take the sample mean to get a better estimate.}
+The estimated average is then $2.2769$.
+
+The result that we get if we use the calculation expressed in question b is 
+\todo[inline]{Add comparison to section b}
 \end{document}

@@ -164,22 +164,33 @@ simulate_2d <- function(lambda, mu, k){
     sn = sn
   )
 }
-k <- 1200
+k <- 300
 simulation <- simulate_2d(2/5, 1/4, k)
 
 # Plot trajectory
 range <- seq(0, k, by = .01)
 plot(range, sapply(range, simulation$xt), type = "l")
 
-# Count number of overtakes present.
-overtakes <- 0
-for(i in 2:length(simulation$exit_times)){
-  if(any(simulation$exit_times[i] < simulation$exit_times[1:(i-1)])){
-    overtakes <- overtakes + 1
-  }
-}
 # Probability of overtaking:
-overtakes/length(simulation$exit_times)
+p_overtakes <- numeric(1000)
+for(i in 1:1000){
+  simul <- simulate_2d(2/5, 1/4, 300)
+  # Calculate overtake probabilities
+  overtakes <- 0
+  for(j in 2:length(simul$exit_times)){
+    if(any(simul$exit_times[j] < simul$exit_times[1:(j-1)])){
+      overtakes <- overtakes + 1
+    }
+  }
+  p_overtakes[i] <- overtakes/length(simul$exit_times)
+}
+mean(p_overtakes)
 
 # Long run average of customers in the system
-mean(sapply(1:k, simulation$xt))
+averages <- numeric(1000)
+for(i in 1:1000){
+  simul <- simulate_2d(2/5, 1/4, 300)
+  averages[i] <- mean(sapply(1:k, simul$xt))
+}
+mean(averages)
+
