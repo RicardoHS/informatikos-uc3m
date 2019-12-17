@@ -1,0 +1,22 @@
+
+\section{Non-homogeneous Poisson Process}
+
+The account selected for the extraction of the tweets is \textit{@realmadrid} since it has a constant number of retweets (RT), not extremely high, allowing us to measure the counting process in a reasonable time space. Although library \textit{rtweet} obtains information about the retweets and their time stamps it is worth mentioning that the results detailed here do not reflect the actual behaviour of the account since retweet count is limited to 100.
+
+\subsection{Use descriptive statistics and graphics to explore the retweets data set in terms of the number of retweets by time and the time between retweets. Does it fit the hypothesis of a Poisson process?}
+
+We know that a Poisson process is a counting process related with the Poisson and Exponential distributions. Being a counting process a stochastic process $\mathbf{N} = \{ N_t, t \geq 0 \}$ satisfying:
+\begin{itemize}
+	\item $N_t=0$
+	\item $N_t$ is integer valued
+	\item For $s<t, N_s \leq N_t$
+	\item For $s<t, N_t - N_s$ represents the number of events that occur in the time intervals (s, t]
+\end{itemize}
+
+When plotting the tweet with maximum retweets (limited) we can see the behaviour of the retweet counting process.
+\begin{figure}[H]
+	\centering
+	\input{./Figures/maxRTcurve.tex}
+	\vspace*{-0.9em}
+	\caption{Tweet with maximum RT process}
+\end{figure}

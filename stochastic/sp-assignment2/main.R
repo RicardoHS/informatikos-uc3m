@@ -1,5 +1,6 @@
 library(tidyverse)
 library(rtweet)
+library(tikzDevice)
 
 #tweets <- get_timeline(user="realmadrid",n=3200)
 #retweet_data <- vector(mode = "list", length = 200)
@@ -36,9 +37,9 @@ maximum_RT <- max(n_retweets)
 index <- which(n_retweets == maximum_RT)
 
 rts <- as.data.frame(cbind(c(1:n_retweets[index]), retweet_difference[[index]], cumsum_retweet_times[[index]]))
-colnames(rts) <- c("Count", "Min", "TotalTime")
-ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
-
+colnames(rts) <- c("Retweets", "Min", "Time")
+#tikz('reportBueno/Figures/maxRTcurve.tex',width=3.5, height=2.5)
+ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
 
 # Pot Sample Tweets
 rts <- as.data.frame(cbind(c(1:maximum_RT), retweet_difference[[index]], cumsum_retweet_times[[index]]))
