@@ -30,3 +30,34 @@ i.e. The following sequence of times would define a retweet counting process for
 \begin{center}
 \textit{1.400000    1.616667    1.716667    1.716667    1.900000    2.616667}
 \end{center}
+
+\textbf{TODO justificar que es Poisson}
+
+\subsection{Assuming you can model the number of retweets by time as a non-homogeneous Poisson process with intensity function $ \lambda (t) = \theta e^{-\theta t},\ t>0$, graphically explore possible values of $\theta$ and choose the one that best fit your data. Explain all the considerations you make.}
+
+\textbf{TODO by Ricardo que no tengo ni puta de lo que ha hecho}
+
+\subsection{Write an R function to simulate data from a non-homogeneous Poisson process during a given time interval. Describe the inputs and outputs of your function.}
+
+As stated in section 11.5.1 of Ross, Sheldon \textit{Introduction To Probability Models}, given $n$ events of a non-homogeneous Poisson process by time $T$ the $n$ event times are independent with a common density function
+\[f(s) = \frac{\lambda(s)}{m(t)},\ 0<s<T, \quad m(T) = \int^T_0\lambda(s)ds\]
+
+By simulating $N(T)$, the number of events by time T, and then simulating $N(T)$ random variables from the previous density function we can generate a NHPP.
+
+\textbf{TODO Seguir explicando el algoritmo}
+
+Translated into the following R function
+\begin{lstlisting}[language=r]
+simulateNHPP <- function(intensity_function, time, lambda_bound) {
+	X <- numeric(0)
+	
+	for ( t in 1:time){
+		u <- runif(2)
+		accept <- u[2] <= intensity_function(time*u[1]) / lambda_bound
+		if (accept)
+			X <- c(X, time * u[1])
+	}
+		
+	return(sort(X))
+}
+\end{lstlisting}
