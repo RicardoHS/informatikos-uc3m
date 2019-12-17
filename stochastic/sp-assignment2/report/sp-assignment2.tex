@@ -53,7 +53,7 @@ Q = \bordermatrix{%
 },
 \]
 The only rows that are different from the rest are the first and second ones.
-In the case of the first one, this is because we can only go from state $X_t = 0$ to $X_t = 1$ if a customer arrives to the queue, and there is no customer to be serviced so that he can leave the queue.
+In the case of the first one, this is because we can only go from state $X_t = 0$ to $X_{t+1} = 1$ if a customer arrives to the queue, and there is no customer to be serviced so that he can leave the queue.
 
 In the case of the second row, now there is only one customer in the system and so he can only be serviced by a single cashier. This means that the chain will jump to state $0$ with rate $\mu$ if the cashier finishes servicing the customer or to state $2$ with rate $\lambda$ if another customer arrives.
 
