@@ -20,3 +20,13 @@ When plotting the tweet with maximum retweets (limited) we can see the behaviour
 	\vspace*{-0.9em}
 	\caption{Tweet with maximum RT process}
 \end{figure}
+
+Each retweet counting process is defined by a time series, measuring the time for the next count (in minutes) since the creation of the tweet. That is, starting at $N_t=0, t=0$ the arrival times $s$ increases the count by 1 unit.
+
+Assuming that, if a user undoes a retweet, when acquiring the dataset the former time of retweet it is no longer recorded, the count can only increase and never decrease. The real model does not hold this assumption since this restriction is imposed by the internal functioning of Twitter and its API.
+
+i.e. The following sequence of times would define a retweet counting process for a tweet with 6 RT. Where the first event occurs after 1.4 minutes.
+
+\begin{center}
+\textit{1.400000    1.616667    1.716667    1.716667    1.900000    2.616667}
+\end{center}
