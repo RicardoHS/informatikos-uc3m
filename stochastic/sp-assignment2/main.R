@@ -44,7 +44,7 @@ ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
 # Pot Sample Tweets
 rts <- as.data.frame(cbind(c(1:maximum_RT), retweet_difference[[index]], cumsum_retweet_times[[index]]))
 colnames(rts) <- c("Count", "Min", "TotalTime")
-plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 5000), ylim = c(0,95))
+plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 5000), ylim = c(0,95), xlab='Time', ylab='Retweets')
 for (i in c(1:200)){
   if(n_retweets[i] > 0) {
     rts <- as.data.frame(cbind(c(1:n_retweets[i]), retweet_difference[[i]], cumsum_retweet_times[[i]]))
@@ -83,7 +83,7 @@ for (t in c(1:n)){
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
-ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Real'))
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Simulated') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Mean'))
 
 ############################################################### OPT
 #### get minima theta, minimize area between lines
@@ -120,7 +120,7 @@ for (t in c(1:n)){
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
-ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Real'))
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Simulated') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Mean'))
 ############################################## END OPT
 
 
