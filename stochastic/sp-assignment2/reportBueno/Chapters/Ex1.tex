@@ -176,6 +176,6 @@ Therefore, the expected number of retweets after 24 hours (1440 minutes) would b
 \[\mathbb{E}'[N_{1440}] = \frac{1}{\overline\lambda} \times \mathbb{E}[N_{1440}] = \frac{1}{0.01} \times 0.9114979 \sim 91\ retweets \] 
 
 Similarly, the probability of $N_t$ being greater than $k$ is
-\[P(N_{t} \geq 10) = 1 - \sum_{t=0}^{k}\frac{\mathbb{E}'[N_{t}]^k e^{-\mathbb{E}'[N_{t}]}}{k!}\]
+\[P(N_{t} \geq k) = 1 - \sum_{t=0}^{k}\frac{\mathbb{E}'[N_{t}]^k e^{-\mathbb{E}'[N_{t}]}}{k!}\]
 then
 \[P(N_{60} \geq 10) = 1 - \sum_{t=0}^{10}\frac{\mathbb{E}'[N_{60}]^k e^{-\mathbb{E}'[N_{60}]}}{k!} = 0.3682237\]
