@@ -48,7 +48,7 @@ Where the first event occurs after 1.4 minutes.
 \textit{1.400000    1.616667    1.716667    1.716667    1.900000    2.616667}
 \end{center}
 
-Knowing that, as stated in Section 6.7 of Dobrow RP \textit{Introduction to Stochastic Processes with R}, a nonhomogeneous Poisson process is a counting process $(N_t)_{t\geq0}$ with intensity function $\lambda(t)$ if
+Knowing that, as stated in Section 6.7 of Dobrow RP \textit{Introduction to Stochastic Processes with R}, a non-homogeneous Poisson process is a counting process $(N_t)_{t\geq0}$ with intensity function $\lambda(t)$ if
 \begin{itemize}
 	\item $N_0 = 0$ 
 	\item For all $t>0$, $N_t$ has a Poisson distribution with mean
@@ -150,13 +150,32 @@ As expected from the original retweet counts the frequency of a user retweeting 
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\input{./Figures/simulated1.tex}
-		\caption{First Simulation $\lambda=0.01$}
+		\caption{Simulation I, $\lambda=0.01$}
 		\label{fig:sim1}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\input{./Figures/simulated2.tex}
-		\caption{Second Simulation $\lambda=0.01$}
+		\caption{Simulation II, $\lambda=0.01$}
 		\label{fig:sim2}
 	\end{subfigure}
 \end{figure}
+
+The simulated process behaves similarly to the account being studied. However, this does not represent the behaviour of all tweets, as the potential impact of the tweet and the interest it may generate influences the frequency of times.
+
+\subsection{Using the intensity function of part b), compute the probability that a tweet from this user will get more than 10 retweets in the first hour, and the expected number of retweets of a tweet after 24 hours.}
+
+The expected number of retweets are given by 
+\[\mathbb{E}[N_t] = \int^t_0\lambda(x)dx \quad \Longrightarrow \quad \mathbb{E}[N_t] = \int^t_0 \theta e^{-\theta x} dx\]
+where the intensity function is $ \lambda (t) = \theta e^{-\theta t},\ t>0$. 
+
+However, when calculating the expected values for the previously defined $\theta = 0.001683839$ we get that $\mathbb{E}[N_t] \in (0,\ 1],\ \forall t>0$. We will use the resulting probability to obtain the following adjusted expectation for $N_t$
+\[\mathbb{E}'[N_t] = ? \times \mathbb{E}[N_t] = ?\int^t_0 \theta e^{-\theta x} dx\]
+
+Therefore, the expected number of retweets after 24 hours (1440 minutes) would be
+\[\mathbb{E}'[N_{1440}] = ? \times \mathbb{E}[N_{1440}] = ? \times 0.9114979 \sim ?\ retweets \] 
+
+Similarly, the probability of $N_t$ being greater than $k$ is
+\[P(N_{t} \geq 10) = 1 - \sum_{t=0}^{k}\frac{\mathbb{E}[N_{t}]^k e^{-\mathbb{E}[N_{t}]}}{k!}\]
+then
+\[P(N_{60} \geq 10) = 1 - \sum_{t=0}^{10}\frac{\mathbb{E}[N_{60}]^k e^{-\mathbb{E}[N_{60}]}}{k!} = ?\]

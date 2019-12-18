@@ -148,3 +148,16 @@ rts <- data.frame("Retweets"=c(1:length(times)), "Time"=times)
 
 #tikz('reportBueno/Figures/simulated3.tex',width=2.5, height=2.5)
 ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
+
+
+# Prob and Expected Value
+test <- numeric(0)
+for (t in 1:1440){
+  test[t] <- integrate(lambda, 0, t)$value * t
+}
+plot(test)
+
+# Expected en 24h
+integrate(lambda, 0, 1440)$value
+# P more than 10 RT first hour
+1-ppois(10,integrate(lambda, 0, 60)$value)
