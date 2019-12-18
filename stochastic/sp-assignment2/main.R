@@ -84,6 +84,7 @@ for (t in c(1:n)){
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
+
 ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Simulated') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Mean'))
 
 ############################################################### OPT
@@ -121,6 +122,7 @@ for (t in c(1:n)){
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
+
 ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Simulated') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Mean'))
 ############################################## END OPT
 
@@ -138,10 +140,12 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
   return(sort(X))
 }
 
-times <- simulateNHPP(lambda, 20000, 0.0001)
+times <- simulateNHPP(lambda, 10000, 0.01)
 hist(times)
 length(times)
 
 rts <- data.frame("Retweets"=c(1:length(times)), "Time"=times)
-ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
 
+tikz('reportBueno/Figures/simulated3.tex',width=2.5, height=2.5)
+ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
+dev.off()

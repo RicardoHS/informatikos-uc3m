@@ -74,19 +74,20 @@ Once we have this mean line, we can plot it along with an arbitrary value of the
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}{.4\textwidth}
-	  \centering
-	  \includegraphics[width=0.9\linewidth]{./Figures/non_optimal.png}
-	  \caption{Mean RT time of tweets and Simulated values with arbitrary $\theta$}
-	  \label{fig:sub1}
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\input{./Figures/notAdjustedTheta.tex}
+		\caption{Mean RT time of tweets (Red) and \\ Simulated values with arbitrary $\theta$ (Blue)}
+		\label{fig:thetaNot}
 	\end{subfigure}%
-	\begin{subfigure}{.4\textwidth}
-	  \centering
-	  \includegraphics[width=1\linewidth]{./Figures/optimal.png}
-	  \caption{Mean RT time of tweets and Simulated values with optimal $\theta$}
-	  \label{fig:sub2}
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\input{./Figures/adjustedTheta.tex}
+		\caption{Mean RT time of tweets (Red) and \\Simulated values with optimal (Blue)$\theta$}
+		\label{fig:thetaYes}
 	\end{subfigure}
 \end{figure}
+
 
 Once this two lines are plotted jointly, it is easily to see that an optimal value for $\theta$ would be the one that minimize the area between the two lines. 
 That is exactly we did in the right plot. 
@@ -128,4 +129,18 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
 Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process.
 
- 
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\input{./Figures/simulated1.tex}
+		\caption{First Simulation $\lambda=0.01$}
+		\label{fig:sim1}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\input{./Figures/simulated2.tex}
+		\caption{Second Simulation $\lambda=0.01$}
+		\label{fig:sim2}
+	\end{subfigure}
+\end{figure}
