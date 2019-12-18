@@ -34,11 +34,10 @@ When plotting the tweet with maximum retweets (limited) and all the tweets we ca
 \end{figure}
 
 Each retweet counting process is defined by a time series, measuring the time for the next count (in minutes) since the creation of the tweet. 
-That is, starting at $N_t=0, t=0$ the arrival times $s$ increases the count by 1 unit.
+That is, starting at $N_t=0, t=0$ the arrival times $s$ increases the count by 1 unit, fulfilling the condition $s<t, N_s \leq N_t$. Moreover, for any time $s<t$ the number of retweets in the interval $(s, t]$ is the difference $N_t -N_s$. 
 
 Assuming that, if a user undoes a retweet, when acquiring the dataset the former time of retweet it is no longer recorded, the count can only increase and never decrease. 
 The real model does not hold this assumption since this restriction is imposed by the internal functioning of Twitter and its API. 
-Nevertheless, because this behaviour is not so common, it can be ignored.
 
 i.e. The following sequence of times would define a retweet counting process for a tweet with 6 RT. 
 Where the first event occurs after 1.4 minutes.
@@ -55,7 +54,11 @@ Knowing that, as stated in Section 6.7 of Dobrow RP \textit{Introduction to Stoc
 	\item For $0\leq q < r \leq s < t$, $N_r - N_q$ and $N_t - N_s$ are independent random variables.
 \end{itemize}
 
-NOTA: No hemos respondido a lo que preguntan. Hay que decir si nuestros tweets son poisson. Yo creo que simplemente podemos decir que es un non-homogeneous possion process donde el parametro de la funcion va decreciendo con el paso del tiempo y a pastar.
+We know that the process already satisfies the conditions of a counting process. In order to find if it fits the hypothesis of a Poisson process, knowing that the times are not homogeneous, we will consider a non-homogeneous Poisson process.
+
+When analysing time frequencies between times we notice that it decreases over time. Meaning that if it were to be a non-homogeneous Poisson process, for all $t>0$, $N_t$ it would follow a Poisson distribution with $\mathbb{E}[N_t] = \lambda = \int_{t}^{0} \lambda(x)dx$ where $\lambda_t < \lambda_{t+1}$ for all $t$ (difference greater over time), assuming unknown intensity function.
+
+When plotting such distribution we get
 
 
 \subsection{Assuming you can model the number of retweets by time as a non-homogeneous Poisson process with intensity function $ \lambda (t) = \theta e^{-\theta t},\ t>0$, graphically explore possible values of $\theta$ and choose the one that best fit your data. Explain all the considerations you make.}
