@@ -125,6 +125,10 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 }
 \end{lstlisting}
 
+The simulation function takes 3 parameters, \textit{intensity\_function}, \textit{time} and \textit{lambda\_bound}. Representing the intensity function of the process to be simulated, a maximum time $t$ to simulate data in the interval $(0, t)$ and an arbitrary $\lambda$ to adjust the simulation.
+
+It returns a list containing all arrival times, from the starting time $t=0$, each one representing one retweet. 
+
 \subsection{Simulate data using the previous function trying to mimic the real retweets data set. Compare the distribution of arrival times for the real and simulated data set. Comment on the differences.}
 
 Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process. Using $\lambda=0.01$ we obtain the most accurate simulation of our account.
