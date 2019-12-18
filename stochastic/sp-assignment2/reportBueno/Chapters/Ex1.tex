@@ -58,7 +58,7 @@ Knowing that, as stated in Section 6.7 of Dobrow RP \textit{Introduction to Stoc
 
 We know that the process already satisfies the conditions of a counting process. In order to find if it fits the hypothesis of a Poisson process, knowing that the times are not homogeneous, we will consider a non-homogeneous Poisson process.
 
-When analysing time frequencies between times we notice that it decreases over time. Meaning that if it were to be a non-homogeneous Poisson process, for all $t>0$, $N_t$ it would follow a Poisson distribution with $\mathbb{E}[N_t] = \lambda = \int_{t}^{0} \lambda(x)dx$ where $\lambda_t < \lambda_{t+1}$ for all $t$ (difference greater over time), assuming unknown intensity function.
+When analyzing time frequencies between retweets we notice that the ratio decreases over time (this behaviour can be observed in the (\ref{fig:rtMax}) plot). Meaning that if it were to be a non-homogeneous Poisson process, for all $t>0$, $N_t$ it would follow a Poisson distribution with $\mathbb{E}[N_t] = \lambda = \int_{t}^{0} \lambda(x)dx$ where $\lambda_t < \lambda_{t+1}$ for all $t$ (difference greater over time), assuming unknown intensity function.
 
 
 \subsection{Assuming you can model the number of retweets by time as a non-homogeneous Poisson process with intensity function $ \lambda (t) = \theta e^{-\theta t},\ t>0$, graphically explore possible values of $\theta$ and choose the one that best fit your data. Explain all the considerations you make.}
@@ -69,7 +69,7 @@ We can treat this mean poisson process as the expected retweet poisson process o
 
 Because not all the tweets have the same amount of retweets we cannot calculate directly the mean value for a given time. 
 In order to compute such value, first, all tweets times are interpolated to have the same amount of points (the number of points is equal to the number of retweets of the max RT tweet). 
-Later, the values can simply be summed and divided by the total number of tweets. 
+Later, the values can simply be summed and divided by the total number of tweets. Finally, this mean line is scaled to a range $[0, 1]$ for easy computation and visualization along with the $\theta$.
 Once we have this mean line, we can plot it along with an arbitrary value of theta and compare visually.
 
 \begin{figure}[H]
@@ -131,7 +131,7 @@ It returns a list containing all arrival times, from the starting time $t=0$, ea
 
 \subsection{Simulate data using the previous function trying to mimic the real retweets data set. Compare the distribution of arrival times for the real and simulated data set. Comment on the differences.}
 
-Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process. Using $\overline \lambda=0.01$ we obtain the most accurate simulation of our account.
+Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process. Using $\overline \lambda=0.01$ \textbf{(@JAVIER XQ?)} we obtain the most accurate simulation of our account.
 
 When running the algorithm we obtain a sequence of arrival times in the interval $(0, T)$. With the following frequency histogram
 
@@ -150,13 +150,13 @@ As expected from the original retweet counts the frequency of a user retweeting 
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\input{./Figures/simulated1.tex}
-		\caption{Simulation I, $\overline\lambda=0.01$}
+		\caption{First Simulation, $\overline\lambda=0.01$}
 		\label{fig:sim1}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\input{./Figures/simulated2.tex}
-		\caption{Simulation II, $\overline\lambda=0.01$}
+		\caption{Second Simulation, $\overline\lambda=0.01$}
 		\label{fig:sim2}
 	\end{subfigure}
 \end{figure}
@@ -169,7 +169,7 @@ The expected number of retweets are given by
 \[\mathbb{E}[N_t] = \int^t_0\lambda(x)dx \quad \Longrightarrow \quad \mathbb{E}[N_t] = \int^t_0 \theta e^{-\theta x} dx\]
 where the intensity function is $ \lambda (t) = \theta e^{-\theta t},\ t>0$. 
 
-However, when calculating the expected values for the previously defined $\theta = 0.001683839$ we get that $\mathbb{E}[N_t] \in (0,\ 1],\ \forall t>0$. We will use the resulting probability to obtain the following adjusted expectation for $N_t$ while using the same $\overline\lambda = 0.01$ in the simulation as the scaling factor of the expected retweets. 
+However, when calculating the expected values for the previously defined $\theta = 0.001683839$ we get that $\mathbb{E}[N_t] \in (0,\ 1],\ \forall t>0$. That is because the mean retweet process was scaled previously. In order to revert this behaviour we will use the resulting probability to obtain the following adjusted expectation for $N_t$ while using the same $\overline\lambda = 0.01$ in the simulation as the scaling factor of the expected retweets. 
 \[\mathbb{E}'[N_t] = \frac{1}{\overline\lambda} \times \mathbb{E}[N_t] = \frac{1}{\overline\lambda}\int^t_0 \theta e^{-\theta x} dx\]
 
 Therefore, the expected number of retweets after 24 hours (1440 minutes) would be
