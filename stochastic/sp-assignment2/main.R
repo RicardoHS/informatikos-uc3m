@@ -194,3 +194,19 @@ for(i in 1:1000){
 }
 mean(averages)
 
+# Long Run average of customers in the system (alternative)
+ncust <- seq(3, 2000, by = 2)
+averages <- numeric(length(ncust))
+for(i in 1:length(ncust)){
+  simul <- simulate_2d(2/5, 1/4, ncust[i])
+  range <- seq(0, ncust[i], by = .1)
+  averages[i] <- mean(sapply(range, simul$xt))
+}
+a <- tibble(ncust = ncust, meanxt = averages)
+# tikz('report/figures/longrunavg.tex',width=2.5, height=2.5)
+ggplot(a, aes(ncust, meanxt)) +
+  geom_jitter()+
+  theme_bw()+
+  # geom_hline(yintercept = mean(a$meanxt), color = "red")+
+  labs(x= "Total Number of Customers", y = "Mean of Xt")
+# dev.off()
