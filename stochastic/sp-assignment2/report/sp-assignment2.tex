@@ -12,6 +12,9 @@
 \usemintedstyle[python]{manni}
 \usemintedstyle[R]{manni}
 \usepackage{todonotes}
+\usepackage[backend = bibtex]{biblatex}
+\addbibresource{bibliography.bib}
+
 
 \title{\vspace{-8ex} \huge \bfseries Stochastic Processes\\
 	\LARGE \normalfont \textsc{Assignment Two} \vspace{-2ex}}
@@ -89,7 +92,15 @@ Then, we can obtain the value for $L$ by calculating the expectation of the stat
 	 L = \sum_{k \geq 0} k\pi_k
 \]
 \subsection*{Question c}
+We can see that the only way an overtake can take place is if, once customer $j$ arrives to the queue, there is a customer $i$ being served and a free cashier. 
+If there are two free cashiers, customer $j$ has nobody to overtake and if both cashiers are occupied he has to wait until one of them is free (and it does not matter which).
 
+Then, in the case previously described we have that the service time for both customer $j$ and customer $i$ is exponentially distributed. As the exponential distribution is \emph{memoryless}, it does not matter how long customer $i$ has been waiting, as the probability of him being serviced before a given amount of time is the same.
+
+Using the expression introduced in section 2 of \cite{baumann2018number}, we can find the expected number of overtakes as
+\[
+	\frac{\lambda}{\lambda + 2\mu}
+\]
 \subsection*{Question d}
 The following code has been used to simulate the process for a given number of customers $k$.
 
