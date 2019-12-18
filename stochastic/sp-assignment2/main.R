@@ -38,17 +38,8 @@ index <- which(n_retweets == maximum_RT)
 
 rts <- as.data.frame(cbind(c(1:n_retweets[index]), retweet_difference[[index]], cumsum_retweet_times[[index]]))
 colnames(rts) <- c("Retweets", "Min", "Time")
-#tikz('reportBueno/Figures/maxRTcurve.tex',width=3.5, height=2.5)
+# tikz('reportBueno/Figures/maxRTcurve.tex',width=2.5, height=2.5)
 ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
-
-
-lambdas <- seq(100, 1, by=-0.1)
-p <- numeric(0)
-for (t in 1:length(lambdas)){
-  p[t] <-rpois(1, lambdas[t])
-}
-poissons <- data.frame("Time" = c(1:length(lambdas)), "Value" = p)
-ggplot(poissons) + geom_line() + aes(x=Time, y=Value)
 
 
 # Pot Sample Tweets

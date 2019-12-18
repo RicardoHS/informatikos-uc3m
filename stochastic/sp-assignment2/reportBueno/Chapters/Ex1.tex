@@ -19,17 +19,19 @@ When plotting the tweet with maximum retweets (limited) and all the tweets we ca
 
 \begin{figure}[H]
 	\centering
-	\begin{subfigure}{.4\textwidth}
+	\begin{subfigure}{.5\textwidth}
 	  \centering
-	  \includegraphics[width=.8\linewidth]{./Figures/maxRTcurve.png}
-	  \caption{Maximum RT tweet distribution}
-	  \label{fig:sub1}
+	  \input{./Figures/maxRTcurve.tex}
+	  \caption{Maximum RT Tweet Distribution}
+	  \label{fig:rtMax}
 	\end{subfigure}%
-	\begin{subfigure}{.4\textwidth}
+	\begin{subfigure}{.5\textwidth}
 	  \centering
-	  \includegraphics[width=1.05\linewidth]{./Figures/all_tweets.png}
-	  \caption{All tweets distribution}
-	  \label{fig:sub2}
+	  \vspace*{-3em}
+	  \input{./Figures/allRTcurve.tex}
+	  \vspace*{-1.4em}
+	  \caption{All Tweets Distributions}
+	  \label{fig:rtAll}
 	\end{subfigure}
 \end{figure}
 
@@ -57,8 +59,6 @@ Knowing that, as stated in Section 6.7 of Dobrow RP \textit{Introduction to Stoc
 We know that the process already satisfies the conditions of a counting process. In order to find if it fits the hypothesis of a Poisson process, knowing that the times are not homogeneous, we will consider a non-homogeneous Poisson process.
 
 When analysing time frequencies between times we notice that it decreases over time. Meaning that if it were to be a non-homogeneous Poisson process, for all $t>0$, $N_t$ it would follow a Poisson distribution with $\mathbb{E}[N_t] = \lambda = \int_{t}^{0} \lambda(x)dx$ where $\lambda_t < \lambda_{t+1}$ for all $t$ (difference greater over time), assuming unknown intensity function.
-
-When plotting such distribution we get
 
 
 \subsection{Assuming you can model the number of retweets by time as a non-homogeneous Poisson process with intensity function $ \lambda (t) = \theta e^{-\theta t},\ t>0$, graphically explore possible values of $\theta$ and choose the one that best fit your data. Explain all the considerations you make.}
