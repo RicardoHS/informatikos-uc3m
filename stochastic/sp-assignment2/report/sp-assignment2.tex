@@ -115,9 +115,9 @@ The resulting estimate for the probability of overtaking is $0.4717$.
 \todo[inline]{Add comparison to section c}
 
 \textbf{Long Run Average of people in the system}
-We can perform a similar calculation in this case, just calculate a trajectory for the chain and compute the mean of $X_t$. This has been done a large number of times, and our final estimate is the mean of the results.
+In this case what we have done is calculate trajectories for the chain for an increasing number of customers. For each of this trajectories we have calculated the mean of the number of customers in the queue, and our final result is the average of the averages, to get a better estimate. The code can be seen in \cref{lst:longrun-sim}.
 \begin{listing}[H]
-	\inputminted[firstline = 189, lastline = 195]{R}{../main.R}
+	\inputminted[firstline = 198, lastline = 203]{R}{../main.R}
 	\caption{Long Run Average Simulation}
 	\label{lst:longrun-sim}
 \end{listing}
