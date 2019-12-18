@@ -127,7 +127,19 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
 \subsection{Simulate data using the previous function trying to mimic the real retweets data set. Compare the distribution of arrival times for the real and simulated data set. Comment on the differences.}
 
-Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process.
+Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process. Using $\lambda=0.01$ we obtain the most accurate simulation of our account.
+
+When running the algorithm we obtain a sequence of arrival times in the interval $(0, T)$. With the following frequency histogram
+
+\begin{figure}[H]
+	\centering
+	\vspace*{-3.5em}
+	\input{./Figures/HistFreq.tex}
+	\vspace*{-1.5em}
+	\caption{Frequencies of Simulated Process}
+\end{figure}
+
+As expected from the original retweet counts the frequency of a user retweeting is higher after the publication of the tweet. 
 
 \begin{figure}[H]
 	\centering

@@ -146,6 +146,5 @@ length(times)
 
 rts <- data.frame("Retweets"=c(1:length(times)), "Time"=times)
 
-tikz('reportBueno/Figures/simulated3.tex',width=2.5, height=2.5)
+#tikz('reportBueno/Figures/simulated3.tex',width=2.5, height=2.5)
 ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
-dev.off()
