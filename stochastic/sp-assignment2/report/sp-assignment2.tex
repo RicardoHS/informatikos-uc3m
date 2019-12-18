@@ -121,8 +121,18 @@ In this case what we have done is calculate trajectories for the chain for an in
 	\caption{Long Run Average Simulation}
 	\label{lst:longrun-sim}
 \end{listing}
-The estimated average is then $2.2769$.
+The estimated average is then $2.2769$, and we can see a plot of the average number of customers in the system in \cref{fig:lravg}.
+\begin{figure}[H]
+	\centering
+	\input{figures/longrunavg.tex}
+	\caption{Long run averages}
+	\label{fig:lravg}
+\end{figure}
 
-The result that we get if we use the calculation expressed in question b is 
-\todo[inline]{Add comparison to section b}
+The result that we get if we use the calculation expressed in question b has been approximated numerically by R, truncating the sum seen in the solution of question b to 10 terms. The result is then
+\[
+	L = \sum_{k = 0}^{100} k \pi_k = 10.1330
+\]
+The result differs quite a bit from the one obtained by the simulation. We have tried to find out the reason for it, but have ultimately been unsuccessful. 
+However we think it is likely a failure of either the simulation procedure or the way that we have calculated the average number of customers in the system.
 \end{document}
