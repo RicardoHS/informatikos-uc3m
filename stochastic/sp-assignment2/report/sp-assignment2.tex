@@ -140,20 +140,19 @@ Therefore, generating random numbers $U_1$ and $U_2$ we accept $U_1T$ if
 This $\overline\lambda$ is an arbitrary parameter based on the non-homogeneous Poisson process to be modelled. For the retweet counting process, knowing that the rate at which a retweet occurs decreases over time (most RT occur right after the publication), in order to mimic that behaviour, $\overline\lambda$ needs to be a low value as to reject most of the values at the end of the process.
 
 Translated into the following R function
-\begin{lstlisting}[language=]
+\begin{minted}{python}
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
 X <- numeric(0)
+  for (t in 1:time){
+      u <- runif(2)
+      accept <- u[2] <= intensity_function(time*u[1]) / lambda_bound
+      if (accept)
+          X <- c(X, time * u[1])
+   }
 
-for ( t in 1:time){
-u <- runif(2)
-accept <- u[2] <= intensity_function(time*u[1]) / lambda_bound
-if (accept)
-X <- c(X, time * u[1])
+  return(sort(X))
 }
-
-return(sort(X))
-}
-\end{lstlisting}
+\end{minted}
 
 The simulation function takes 3 parameters, \textit{intensity\_function}, \textit{time} and \textit{lambda\_bound}. Representing the intensity function of the process to be simulated, a maximum time $t$ to simulate data in the interval $(0, t)$ and an arbitrary $\overline \lambda$ to adjust the simulation.
 
