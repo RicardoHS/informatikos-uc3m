@@ -207,6 +207,7 @@ for(i in 1:length(ncust)){
   range <- seq(0, ncust[i], by = .1)
   averages[i] <- mean(sapply(range, simul$xt))
 }
+mean(averages)
 a <- tibble(ncust = ncust, meanxt = averages)
 # tikz('report/figures/longrunavg.tex',width=2.5, height=2.5)
 ggplot(a, aes(ncust, meanxt)) +
