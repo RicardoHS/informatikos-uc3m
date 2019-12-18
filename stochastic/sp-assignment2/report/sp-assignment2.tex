@@ -210,7 +210,7 @@ then
 \[P(N_{60} \geq 10) = 1 - \sum_{t=0}^{10}\frac{\mathbb{E}'[N_{60}]^k e^{-\mathbb{E}'[N_{60}]}}{k!} = 0.3682237\]
 
 \section{Exercise 2}
-\subsection*{Question a}
+\subsection*{a) What kind of process is $\bm{X} = \{X_t, \ t\geq 0\}$? Write its state space and infinitesimal generator}
 The process $\bm{X} = \{X_t, \ t\geq 0\}$ is a continuous time Markov chain, as we are told that:
 \begin{itemize}
 	\item The customers arrive according ot a Poisson distribution with rate $\lambda$.
@@ -243,7 +243,7 @@ In the case of the second row, now there is only one customer in the system and 
 From rows $3$ onwards, there is now at least two customers in the system, and as there are two cashiers the rate at which any one customer exits the system is the minimum between the time it takes the two cashiers to service their customer, which is exponentially distributed with rate $2\mu$ as we have explained previously.
 Of course, customers can keep arriving at rate $\lambda$ as there is no limit to the amount of customers in the system.
 
-\subsection*{Question b}
+\subsection*{b) Compute its stationary distribution. What is the expected number of people in the system (checking-out or in the waiting line) in the long-run?}
 We know from the result in slide 21 of the continuous time Markov chain topic that the stationary distributions satisfies that $\bm{\pi}Q = 0$.
 To find the stationary distribution we have to look for $\pi$ such that $\pi_i q_{ij} = \pi_j q_{ji}$.
 
@@ -271,7 +271,7 @@ Then, we can obtain the value for $L$ by calculating the expectation of the stat
 \[
 	 L = \sum_{k \geq 0} k\pi_k
 \]
-\subsection*{Question c}
+\subsection*{c) We say that overtaking occurs when a customer departs the supermarket before another customer who arrived earlier to the waiting line. In steady state, find the probability that an arriving customer overtakes another customer (you may assume that the state of the system at each arrival instant is distributed according to the stationary distribution)}
 We can see that the only way an overtake can take place is if, once customer $j$ arrives to the queue, there is a customer $i$ being served and a free cashier. 
 If there are two free cashiers, customer $j$ has nobody to overtake and if both cashiers are occupied he has to wait until one of them is free (and it does not matter which).
 
@@ -283,7 +283,7 @@ Using the expression introduced in section 2 of \cite{baumann2018number}, we can
 \]
 which is the particular expression for a M/M/2 queue like the one in our problem.
 
-\subsection*{Question d}
+\subsection*{d) Write the R code necessary to simulate the system (provide the code) and generate the times customers leave the supermarket}
 The following code has been used to simulate the process for a given number of customers $k$.
 
 \begin{listing}[H]
@@ -294,7 +294,7 @@ The following code has been used to simulate the process for a given number of c
 The generated exit times for a particular run of the simulation for 20 clients is:  1.4055, 16.1761, 35.5182, 16.8476, 24.2676, 19.0045, 21.4588, 25.0099, 23.4262, 25.6694, 35.5983, 38.0062, 42.7047,
 39.5616, 48.4383, 40.1864, 41.2149, 48.9295, 41.5665, 46.4211 (in the relevant time unit).
 
-\subsection*{Question e}
+\subsection*{e) Assuming 2 customers arrive to the cashiers every 5 minutes on average and it takes an average time of 4 minutes to check-out, estimate through simulation the probability of overtaking and compare it with the result you got in part c). Also estimate the long-run average number of people in the system and compare it with the result of part b). Explain all the considerations you make and the simulation setting (provide the code).}
 If two customers arrive every five minutes, this implies a rate $\lambda = \frac{2}{5}$ customers per minute. We also have that $\mathbf{E}\left[ \text{Cashier Serving Time}\right] = 4$. Since it is exponentially distributed, it rate has to be then $\mu = \frac{1}{4}$ customers per minute.
 
 
