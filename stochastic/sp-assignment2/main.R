@@ -195,7 +195,7 @@ for(i in 1:1000){
 mean(averages)
 
 # Long Run average of customers in the system (alternative)
-ncust <- seq(3, 2000, by = 2)
+ncust <- seq(3, 2000, by = 5)
 averages <- numeric(length(ncust))
 for(i in 1:length(ncust)){
   simul <- simulate_2d(2/5, 1/4, ncust[i])
@@ -210,3 +210,22 @@ ggplot(a, aes(ncust, meanxt)) +
   # geom_hline(yintercept = mean(a$meanxt), color = "red")+
   labs(x= "Total Number of Customers", y = "Mean of Xt")
 # dev.off()
+
+lambda <- 2/5
+mu <- 1/4
+# Calculate stationary distribution
+calculate_pi0 <- function(lambda, mu){
+  result <- 1 + lambda/mu + ((lambda/mu)^2)/2 * 1/(1 - (lambda/2*mu))
+  1/result
+}
+pi0 <- calculate_pi0(lambda, mu)
+pi <- numeric(1000)
+for(k in 1:length(pi)){
+  pi[k] <- pi0*(lambda/mu)^k * 1/(2^(k-1))
+}
+
+L <- 0
+for(i in 1:length(pi)){
+  L <- L + i*pi[i]
+}
+
