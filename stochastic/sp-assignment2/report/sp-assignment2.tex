@@ -123,9 +123,10 @@ If two customers arrive every five minutes, this implies a rate $\lambda = \frac
 	\label{lst:overtaking-sim}
 \end{listing}
 The resulting estimate for the probability of overtaking is $0.4717$.
-\todo[inline]{Add comparison to section c}
 
-\textbf{Long Run Average of people in the system}
+The result when applying the equation introduced in the solution to question c is $\frac{\lambda}{\lambda + 2\mu} = 0.4444$. This is indeed quite close to our estimate, although not exactly the same due to the random nature of the process.
+
+\textbf{Long Run Average of people in the system:}
 In this case what we have done is calculate trajectories for the chain for an increasing number of customers. For each of this trajectories we have calculated the mean of the number of customers in the queue, and our final result is the average of the averages, to get a better estimate. The code can be seen in \cref{lst:longrun-sim}.
 \begin{listing}[H]
 	\inputminted[firstline = 198, lastline = 203]{R}{../main.R}
@@ -146,4 +147,6 @@ The result that we get if we use the calculation expressed in question b has bee
 \]
 The result differs quite a bit from the one obtained by the simulation. We have tried to find out the reason for it, but have ultimately been unsuccessful. 
 However we think it is likely a failure of either the simulation procedure or the way that we have calculated the average number of customers in the system.
+
+\printbibliography
 \end{document}
