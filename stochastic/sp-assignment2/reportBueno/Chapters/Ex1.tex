@@ -94,15 +94,22 @@ We write a function that automatically minimize this area and give us a value of
 
 \subsection{Write an R function to simulate data from a non-homogeneous Poisson process during a given time interval. Describe the inputs and outputs of your function.}
 
-As stated in section 11.5.1 of Ross, Sheldon \textit{Introduction To Probability Models}, given $n$ events of a non-homogeneous Poisson process by time $T$ the $n$ event times are independent with a common density function
-\[f(s) = \frac{\lambda(s)}{m(t)},\ 0<s<T, \quad m(T) = \int^T_0\lambda(s)ds\]
+As stated in section 11.5.1 of Ross, Sheldon \textit{Introduction To Probability Models}, given $n$ events of a non-homogeneous Poisson process by time $T$ (maximum time) the $n$ event times are independent with a common density function
+\[f(s) = \frac{\lambda(s)}{\mathbb{E}[N_T]},\ 0<s<T, \quad \mathbb{E}[N_T] = \int^T_0\lambda(s)ds\]
+By simulating $N_T$, the number of events by time $T$, and then simulating $N_T$ random variables from the previous density function we can generate a NHPP.
 
-By simulating $N(T)$, the number of events by time T, and then simulating $N(T)$ random variables from the previous density function we can generate a NHPP.
+However, this procedure requires on the inverted distribution of $f(s)$  and may be too complex to obtain. Since this is a general function with the aim of simulating any non-homogeneous process we will opt for a rejection method.
 
-\textbf{TODO Seguir explicando el algoritmo}
+That is, we reject or accept values of uniform $(0, T)$ random variables. Defining a limiting $\lambda$, a bound on $\lambda(s), 0\leq s \leq T$, then 
+\[\frac{T \lambda(s)}{\mathbb{E}[N_T]} \leq \frac{\lambda T}{\mathbb{E}[N_T]} \]
+
+Therefore, generating random numbers $U_1$ and $U_2$ we accept $U_1T$ if
+\[U_2 \leq \frac{\lambda(U_1T)}{\lambda}\]
+
+This $\lambda$ is an arbitrary parameter based on the non-homogeneous Poisson process to be modelled. For the retweet counting process, knowing that the rate at which a retweet occurs decreases over time (most RT occur right after the publication), in order to mimic that behaviour, $\lambda$ needs to be a low value as to reject most of the values at the end of the process.
 
 Translated into the following R function
-\begin{lstlisting}[language=r]
+\begin{lstlisting}[language=]
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
 	X <- numeric(0)
 	
@@ -116,3 +123,9 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 	return(sort(X))
 }
 \end{lstlisting}
+
+\subsection{Simulate data using the previous function trying to mimic the real retweets data set. Compare the distribution of arrival times for the real and simulated data set. Comment on the differences.}
+
+Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process.
+
+ 
