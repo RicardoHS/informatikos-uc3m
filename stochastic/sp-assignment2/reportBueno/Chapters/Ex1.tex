@@ -101,13 +101,13 @@ By simulating $N_T$, the number of events by time $T$, and then simulating $N_T$
 
 However, this procedure requires on the inverted distribution of $f(s)$  and may be too complex to obtain. Since this is a general function with the aim of simulating any non-homogeneous process we will opt for a rejection method.
 
-That is, we reject or accept values of uniform $(0, T)$ random variables. Defining a limiting $\lambda$, a bound on $\lambda(s), 0\leq s \leq T$, then 
-\[\frac{T \lambda(s)}{\mathbb{E}[N_T]} \leq \frac{\lambda T}{\mathbb{E}[N_T]} \]
+That is, we reject or accept values of uniform $(0, T)$ random variables. Defining a limiting $\overline\lambda$, a bound on $\lambda(s), 0\leq s \leq T$, then 
+\[\frac{T \lambda(s)}{\mathbb{E}[N_T]} \leq \frac{\overline\lambda T}{\mathbb{E}[N_T]} \]
 
 Therefore, generating random numbers $U_1$ and $U_2$ we accept $U_1T$ if
-\[U_2 \leq \frac{\lambda(U_1T)}{\lambda}\]
+\[U_2 \leq \frac{\lambda(U_1T)}{\overline \lambda}\]
 
-This $\lambda$ is an arbitrary parameter based on the non-homogeneous Poisson process to be modelled. For the retweet counting process, knowing that the rate at which a retweet occurs decreases over time (most RT occur right after the publication), in order to mimic that behaviour, $\lambda$ needs to be a low value as to reject most of the values at the end of the process.
+This $\overline\lambda$ is an arbitrary parameter based on the non-homogeneous Poisson process to be modelled. For the retweet counting process, knowing that the rate at which a retweet occurs decreases over time (most RT occur right after the publication), in order to mimic that behaviour, $\overline\lambda$ needs to be a low value as to reject most of the values at the end of the process.
 
 Translated into the following R function
 \begin{lstlisting}[language=]
@@ -125,13 +125,13 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 }
 \end{lstlisting}
 
-The simulation function takes 3 parameters, \textit{intensity\_function}, \textit{time} and \textit{lambda\_bound}. Representing the intensity function of the process to be simulated, a maximum time $t$ to simulate data in the interval $(0, t)$ and an arbitrary $\lambda$ to adjust the simulation.
+The simulation function takes 3 parameters, \textit{intensity\_function}, \textit{time} and \textit{lambda\_bound}. Representing the intensity function of the process to be simulated, a maximum time $t$ to simulate data in the interval $(0, t)$ and an arbitrary $\overline \lambda$ to adjust the simulation.
 
 It returns a list containing all arrival times, from the starting time $t=0$, each one representing one retweet. 
 
 \subsection{Simulate data using the previous function trying to mimic the real retweets data set. Compare the distribution of arrival times for the real and simulated data set. Comment on the differences.}
 
-Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process. Using $\lambda=0.01$ we obtain the most accurate simulation of our account.
+Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process. Using $\overline \lambda=0.01$ we obtain the most accurate simulation of our account.
 
 When running the algorithm we obtain a sequence of arrival times in the interval $(0, T)$. With the following frequency histogram
 
@@ -150,13 +150,13 @@ As expected from the original retweet counts the frequency of a user retweeting 
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\input{./Figures/simulated1.tex}
-		\caption{Simulation I, $\lambda=0.01$}
+		\caption{Simulation I, $\overline\lambda=0.01$}
 		\label{fig:sim1}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\input{./Figures/simulated2.tex}
-		\caption{Simulation II, $\lambda=0.01$}
+		\caption{Simulation II, $\overline\lambda=0.01$}
 		\label{fig:sim2}
 	\end{subfigure}
 \end{figure}
@@ -169,13 +169,13 @@ The expected number of retweets are given by
 \[\mathbb{E}[N_t] = \int^t_0\lambda(x)dx \quad \Longrightarrow \quad \mathbb{E}[N_t] = \int^t_0 \theta e^{-\theta x} dx\]
 where the intensity function is $ \lambda (t) = \theta e^{-\theta t},\ t>0$. 
 
-However, when calculating the expected values for the previously defined $\theta = 0.001683839$ we get that $\mathbb{E}[N_t] \in (0,\ 1],\ \forall t>0$. We will use the resulting probability to obtain the following adjusted expectation for $N_t$
-\[\mathbb{E}'[N_t] = ? \times \mathbb{E}[N_t] = ?\int^t_0 \theta e^{-\theta x} dx\]
+However, when calculating the expected values for the previously defined $\theta = 0.001683839$ we get that $\mathbb{E}[N_t] \in (0,\ 1],\ \forall t>0$. We will use the resulting probability to obtain the following adjusted expectation for $N_t$ while using the same $\overline\lambda = 0.01$ in the simulation as the scaling factor of the expected retweets. 
+\[\mathbb{E}'[N_t] = \frac{1}{\overline\lambda} \times \mathbb{E}[N_t] = \frac{1}{\overline\lambda}\int^t_0 \theta e^{-\theta x} dx\]
 
 Therefore, the expected number of retweets after 24 hours (1440 minutes) would be
-\[\mathbb{E}'[N_{1440}] = ? \times \mathbb{E}[N_{1440}] = ? \times 0.9114979 \sim ?\ retweets \] 
+\[\mathbb{E}'[N_{1440}] = \frac{1}{\overline\lambda} \times \mathbb{E}[N_{1440}] = \frac{1}{0.01} \times 0.9114979 \sim 91\ retweets \] 
 
 Similarly, the probability of $N_t$ being greater than $k$ is
-\[P(N_{t} \geq 10) = 1 - \sum_{t=0}^{k}\frac{\mathbb{E}[N_{t}]^k e^{-\mathbb{E}[N_{t}]}}{k!}\]
+\[P(N_{t} \geq 10) = 1 - \sum_{t=0}^{k}\frac{\mathbb{E}'[N_{t}]^k e^{-\mathbb{E}'[N_{t}]}}{k!}\]
 then
-\[P(N_{60} \geq 10) = 1 - \sum_{t=0}^{10}\frac{\mathbb{E}[N_{60}]^k e^{-\mathbb{E}[N_{60}]}}{k!} = ?\]
+\[P(N_{60} \geq 10) = 1 - \sum_{t=0}^{10}\frac{\mathbb{E}'[N_{60}]^k e^{-\mathbb{E}'[N_{60}]}}{k!} = 0.3682237\]
