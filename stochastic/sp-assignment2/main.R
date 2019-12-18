@@ -1,5 +1,6 @@
 library(tidyverse)
 library(rtweet)
+library(tikzDevice)
 
 #tweets <- get_timeline(user="realmadrid",n=3200)
 #retweet_data <- vector(mode = "list", length = 200)
@@ -36,14 +37,15 @@ maximum_RT <- max(n_retweets)
 index <- which(n_retweets == maximum_RT)
 
 rts <- as.data.frame(cbind(c(1:n_retweets[index]), retweet_difference[[index]], cumsum_retweet_times[[index]]))
-colnames(rts) <- c("Count", "Min", "TotalTime")
-ggplot(rts) + geom_line() + aes(x=TotalTime, y=Count)
+colnames(rts) <- c("Retweets", "Min", "Time")
+# tikz('reportBueno/Figures/maxRTcurve.tex',width=2.5, height=2.5)
+ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
 
 
 # Pot Sample Tweets
 rts <- as.data.frame(cbind(c(1:maximum_RT), retweet_difference[[index]], cumsum_retweet_times[[index]]))
 colnames(rts) <- c("Count", "Min", "TotalTime")
-plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 5000), ylim = c(0,95))
+plot(rts$TotalTime, rts$Count, type = "l", xlim = c(0, 5000), ylim = c(0,95), xlab='Time', ylab='Retweets')
 for (i in c(1:200)){
   if(n_retweets[i] > 0) {
     rts <- as.data.frame(cbind(c(1:n_retweets[i]), retweet_difference[[i]], cumsum_retweet_times[[i]]))
@@ -82,7 +84,8 @@ for (t in c(1:n)){
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
-ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Real'))
+
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Simulated') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Mean'))
 
 ############################################################### OPT
 #### get minima theta, minimize area between lines
@@ -119,14 +122,15 @@ for (t in c(1:n)){
 }
 
 points <- data.frame(ExpectedCount=points, TotalTime=c(1:n))
-ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Expected') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Real'))
+
+ggplot(points) + geom_line() + aes(x=TotalTime, y=ExpectedCount, color='Simulated') + geom_line(data = foo_rts, aes(x=TotalTime-foo_rts_min, y=Count, color='Mean'))
 ############################################## END OPT
 
 
 simulateNHPP <- function(intensity_function, time, lambda_bound) {
   X <- numeric(0)
 
-  while( length(X) <= time){
+  for ( t in 1:time){
     u <- runif(2)
     accept <- u[2] <= intensity_function(time*u[1]) / lambda_bound
     if (accept)
@@ -135,7 +139,8 @@ simulateNHPP <- function(intensity_function, time, lambda_bound) {
 
   return(sort(X))
 }
-times <- simulateNHPP(lambda, 2000, 0.7)
+
+times <- simulateNHPP(lambda, 10000, 0.01)
 hist(times)
 
 
@@ -229,3 +234,14 @@ for(i in 1:length(pi)){
   L <- L + i*pi[i]
 }
 
+length(times)
+
+rts <- data.frame("Retweets"=c(1:length(times)), "Time"=times)
+
+#tikz('reportBueno/Figures/simulated3.tex',width=2.5, height=2.5)
+ggplot(rts) + geom_line() + aes(x=Time, y=Retweets)
+
+# Expected in 24h
+integrate(lambda, 0, 1440)$value / 0.01
+# P more than 10 RT first hour
+1-ppois(10,integrate(lambda, 0, 60)$value/ 0.01)
