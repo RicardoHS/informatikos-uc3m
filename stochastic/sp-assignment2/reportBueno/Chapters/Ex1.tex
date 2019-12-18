@@ -131,14 +131,14 @@ It returns a list containing all arrival times, from the starting time $t=0$, ea
 
 \subsection{Simulate data using the previous function trying to mimic the real retweets data set. Compare the distribution of arrival times for the real and simulated data set. Comment on the differences.}
 
-Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process. Using $\overline \lambda=0.01$ \textbf{(@JAVIER XQ?)} we obtain the most accurate simulation of our account.
+Using the previously implemented function and having estimated the optimal value for $\theta$ we model our account retweet process. Knowing that the maximum number of retweets is limited by Twitter's API to 100, the following $\overline \lambda=0.01 = \frac{1}{100}$ has been established. This $\overline \lambda$ would vary depending on these maximum retweets.
 
-When running the algorithm we obtain a sequence of arrival times in the interval $(0, T)$. With the following frequency histogram
+When running the algorithm we obtain a sequence of arrival times in the interval $(0, T)$ with the following frequency histogram
 
 \begin{figure}[H]
 	\centering
 	\vspace*{-3.5em}
-	\input{./Figures/HistFreq.tex}
+	 \scalebox{.8}{\input{./Figures/HistFreq.tex}}
 	\vspace*{-1.5em}
 	\caption{Frequencies of Simulated Process}
 \end{figure}
@@ -169,7 +169,7 @@ The expected number of retweets are given by
 \[\mathbb{E}[N_t] = \int^t_0\lambda(x)dx \quad \Longrightarrow \quad \mathbb{E}[N_t] = \int^t_0 \theta e^{-\theta x} dx\]
 where the intensity function is $ \lambda (t) = \theta e^{-\theta t},\ t>0$. 
 
-However, when calculating the expected values for the previously defined $\theta = 0.001683839$ we get that $\mathbb{E}[N_t] \in (0,\ 1],\ \forall t>0$. That is because the mean retweet process was scaled previously. In order to revert this behaviour we will use the resulting probability to obtain the following adjusted expectation for $N_t$ while using the same $\overline\lambda = 0.01$ in the simulation as the scaling factor of the expected retweets. 
+However, when calculating the expected values for the previously defined $\theta = 0.001683839$ we get that $\mathbb{E}[N_t] \in (0,\ 1],\ \forall t>0$. Since the mean retweet process was previously scaled, in order to revert this behaviour, we will use the resulting probability to obtain the following adjusted expectation for $N_t$ while using the same $\overline\lambda = 0.01$ as in the simulation as the scaling factor of the expected retweets. 
 \[\mathbb{E}'[N_t] = \frac{1}{\overline\lambda} \times \mathbb{E}[N_t] = \frac{1}{\overline\lambda}\int^t_0 \theta e^{-\theta x} dx\]
 
 Therefore, the expected number of retweets after 24 hours (1440 minutes) would be
