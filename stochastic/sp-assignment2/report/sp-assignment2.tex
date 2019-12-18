@@ -287,11 +287,11 @@ which is the particular expression for a M/M/2 queue like the one in our problem
 The following code has been used to simulate the process for a given number of customers $k$.
 
 \begin{listing}[H]
-	\inputminted[firstline = 143, lastline = 166]{R}{../main.R}
+	\inputminted[firstline = 148, lastline = 173]{R}{../main.R}
 	\caption{M/M/2 simulation}
 	\label{lst:mm2sim}
 \end{listing}
-The generated exit times for a particular run of the simulation for 20 clients is:  1.4055, 16.1761, 35.5182, 16.8476, 24.2676, 19.0045, 21.4588, 25.0099, 23.4262, 25.6694, 35.5983, 38.0062, 42.7047,
+The generated exit times for a particular run of the simulation for 20 clients with the parameters given in question e is:  1.4055, 16.1761, 35.5182, 16.8476, 24.2676, 19.0045, 21.4588, 25.0099, 23.4262, 25.6694, 35.5983, 38.0062, 42.7047,
 39.5616, 48.4383, 40.1864, 41.2149, 48.9295, 41.5665, 46.4211 (in the relevant time unit).
 
 \subsection*{e) Assuming 2 customers arrive to the cashiers every 5 minutes on average and it takes an average time of 4 minutes to check-out, estimate through simulation the probability of overtaking and compare it with the result you got in part c). Also estimate the long-run average number of people in the system and compare it with the result of part b). Explain all the considerations you make and the simulation setting (provide the code).}
@@ -300,7 +300,7 @@ If two customers arrive every five minutes, this implies a rate $\lambda = \frac
 
 \textbf{Probability of overtaking:} We can get an estimate for this probability by calculating a trajectory of the chain, computing the number of overtakes and dividing by the total length of the chain. This has been done in \cref{lst:overtaking-sim}, where we have performed this procedure a large number of times then taken the average in order to obtain a better estimate.
 \begin{listing}[H]
-	\inputminted[firstline = 175, lastline = 187]{R}{../main.R}
+	\inputminted[firstline = 180, lastline = 192]{R}{../main.R}
 	\caption{Overtaking Simulation}
 	\label{lst:overtaking-sim}
 \end{listing}
@@ -311,7 +311,7 @@ The result when applying the equation introduced in the solution to question c i
 \textbf{Long Run Average of people in the system:}
 In this case what we have done is calculate trajectories for the chain for an increasing number of customers. For each of this trajectories we have calculated the mean of the number of customers in the queue, and our final result is the average of the averages, to get a better estimate. The code can be seen in \cref{lst:longrun-sim}.
 \begin{listing}[H]
-	\inputminted[firstline = 198, lastline = 203]{R}{../main.R}
+	\inputminted[firstline = 203, lastline = 209]{R}{../main.R}
 	\caption{Long Run Average Simulation}
 	\label{lst:longrun-sim}
 \end{listing}
