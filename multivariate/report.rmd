@@ -173,7 +173,32 @@ poke_numeric <- select_if(poke, is.numeric)
 pca <- prcomp(poke_numeric)
 fviz_eig(pca, ncp = 12)
 ```
-We can see in this plot that the first two principal components already explain almost half the variance in our dataset. We will now explore the weights of the principal components.
+The shape of this plot seems a little fishy, as it seems that principal components explain the variance of our dataset in pairs. To get an insight into why, we can check the correlation plot for our numerical variables:
+
+```{r}
+corrplot(cor(poke_numeric))
+```
+Here we can see that the variables related to the two different pokemon in the fight are completely uncorrelated. This does make sense considering the dataset, but unfortunately it makes it so that the principal components that we would obtain from this dataset come in pairs (as each of the pairs could be explaining variability in each of the pokemon).
+
+We can see that this is the case by plotting the weights of the first two principal components:
+```{r, message = F, echo = F}
+ggplot(as.data.frame(pca$rotation[,1:2]), 
+       aes(x=0,y=0,
+           xend=PC1, 
+           yend=PC2, 
+           label=rownames(as.data.frame(pca$rotation[,1:2]))))+ 
+  geom_segment( arrow = arrow(length = unit(0.1,"cm")))+
+  coord_cartesian(xlim=-1:1, ylim=-1:1)+
+  geom_text(aes(x = PC1, y = PC2))+
+  coord_flip()
+```
+
+In order to perform a proper analysis, we have transformed the dataset so that we only take into account the variables for one pokemon, although this does make it so that our dataset does not have many variables unfortunately.
+```{r}
+poke_numeric <- select_if(poke_long, is.numeric) 
+pca <- prcomp(poke_numeric)
+fviz_eig(pca, ncp = 12)
+```
 
 We can plot the weights of the first three principal components to get some insight into our data.
 ```{r}
@@ -183,7 +208,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC1))+
   geom_label_repel(aes(label = variable))+
   geom_hline(yintercept=0)
 ```
-We can see that the weights are all quite high in general. However, the variables related to the first pokemon have bigger values than the ones related to the second one. A possible interpretation of this is **TODO: AÑADIR INTERPRETACION**. 
+We can see that the weights are all quite high in general, so perhaps this component just explains the general "power level" of a pokemon for instance.
 
 ```{r}
 ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
@@ -191,6 +216,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
   geom_label_repel(aes(label = variable))+
   geom_hline(yintercept=0)
 ```
+For this second principal component we have that the weights for `Sp.Atk` and `Speed` are higher, so this might be related to the special offensive capabilities of the pokemon in some sense.
 
 ```{r}
 ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC3))+
@@ -198,7 +224,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC3))+
   geom_label_repel(aes(label = variable))+
   geom_hline(yintercept=0)
 ```
-
+For this last PC, as the highest weight is related to the variable `Attack` this probably is related to the physical attack capabilities of the pokemon, as `Sp.Atk` and `Sp.Def` are related to non-physical combat type.
 
 ```{r, warning=F, message = F}
 ggplot(as.data.frame(pca$rotation[,1:2]), 
@@ -213,3 +239,53 @@ ggplot(as.data.frame(pca$rotation[,1:2]),
 ```
 
 # Factor Analysis
+As we have seen in the previous section, we will limit our analysis to the variables of just one pokemon. We can first check the correlation between these variables by using again a correlation plot.
+
+```{r}
+poke_numeric <- select_if(poke_long, is.numeric)
+corrplot(cor(poke_numeric), order = "hclust")
+```
+Unfortunately as there are not that many variables the correlation plot is not useful in order to if there are any groups present in the dataset. However one thing we can see that `Defense` and `Speed` are completely uncorrelated.
+
+We can now calculate the $M$ matrix for the first 2 principal components, as we have only 6 variables so it does not make much sense to compute a lot of factors.
+```{r}
+poke_scaled <- scale(poke_numeric)
+pca_factor <- prcomp(poke_scaled)
+
+r <- 2
+p <- ncol(poke_numeric)
+M <-  pca_factor$rotation[,1:r] %*% diag(pca_factor$sdev[1:r])
+M <- varimax(M)
+M <- loadings(M)[1:ncol(poke_numeric), 1:r]
+```
+
+```{r}
+plot(1:p,M[,1],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights for the first factor")
+abline(h=0)
+text(1:p,M[,1],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
+```
+This factor has high weight for both `Defense` and `Sp.Def` as well as for `Attack`, `HP` and `Sp.Atk`. A possible interpretation of this latent variable is that it explains the general combat effectiveness of the pokemon, regardless of speed. A high value for this latent variable would mean for example that a pokemon would last longer in combat.
+
+```{r}
+plot(1:p,M[,2],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights for the second factor")
+abline(h=0)
+text(1:p,M[,2],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
+```
+This factor has high (negative) weights for `Speed` and and other related offensive variables. A possible interpretation for this factor is the "slowness" of the pokemon.
+
+### Commonalities and Uniqueness
+We can compute the commonalities to see how well each variable is explained by the factors:
+```{r}
+comm <- diag(M %*% t(M))
+sort(comm, decreasing = T)
+```
+
+The estimate of the covariance matrix of the errors is given by the following formula, which we will then use to compute the uniqueness of our variables. This will give us an estimate of the unexplained variance present in them.
+```{r}
+sigma_nu <- diag(diag(cov(poke_scaled) - M %*% t(M)))
+uniq <- diag(sigma_nu)
+names(uniq) <- names(comm)
+sort(uniq, decreasing=TRUE)
+```
+
+We see that the better explained variables by the factors are `Speed` and `Defense`, while the worst ones are `HP` and `Attack`.
