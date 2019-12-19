@@ -247,7 +247,7 @@ Of course, customers can keep arriving at rate $\lambda$ as there is no limit to
 We know from the result in slide 21 of the continuous time Markov chain topic that the stationary distributions satisfies that $\bm{\pi}Q = 0$.
 To find the stationary distribution we have to look for $\pi$ such that $\pi_i q_{ij} = \pi_j q_{ji}$.
 
-A general expression for the elements $\pi_k, \ k\geq 1$ in terms of $\pi_0$ is the following:
+After checking the values for a number of specific $i, j$ in the previous expression, we have found that a general expression for the elements $\pi_k, \ k\geq 1$ in terms of $\pi_0$ is the following:
 \[
 	\pi_k = \pi_0\left(\frac{\lambda}{\mu}\right)^k \frac{1}{2^{k-1}}
 \]
@@ -281,7 +281,7 @@ Using the expression introduced in section 2 of \cite{baumann2018number}, we can
 \[
 	\frac{\lambda}{\lambda + 2\mu},
 \]
-which is the particular expression for a M/M/2 queue like the one in our problem.
+which is the particular expression for a M/M/2 queue like the one in our case.
 
 \subsection*{d) Write the R code necessary to simulate the system (provide the code) and generate the times customers leave the supermarket}
 The following code has been used to simulate the process for a given number of customers $k$.
@@ -315,7 +315,7 @@ In this case what we have done is calculate trajectories for the chain for an in
 	\caption{Long Run Average Simulation}
 	\label{lst:longrun-sim}
 \end{listing}
-The estimated average is then $2.2769$, and we can see a plot of the average number of customers in the system in \cref{fig:lravg}.
+The estimated average is then $2.2421$, and we can see a plot of the average number of customers in the system in \cref{fig:lravg}.
 \begin{figure}[H]
 	\centering
 	\input{figures/longrunavg.tex}
@@ -323,7 +323,7 @@ The estimated average is then $2.2769$, and we can see a plot of the average num
 	\label{fig:lravg}
 \end{figure}
 
-The result that we get if we use the calculation expressed in question b has been approximated numerically by R, truncating the sum seen in the solution of question b to 10 terms. The result is then
+The result that we get if we use the calculation expressed in question b has been approximated numerically by R, truncating the sum seen in the solution of question b to 100 terms. The result is then
 \[
 	L = \sum_{k = 0}^{100} k \pi_k = 10.1330
 \]
