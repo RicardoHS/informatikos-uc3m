@@ -87,6 +87,7 @@ poke_long %>%
 We can see that the distribution of the generations of pokemon is not uniform, which might affect the amount of wins for each generation in the fights. We can also check the distribution of the legendary pokemon in our data.
 
 We can also look at a boxplot of our variables to get some more insight into their distributions, as well as letting us see wheter there are any outliers in our data.
+
 ```{r, cache = TRUE, dependson="poke"}
 poke_long %>% 
   select_if(is.numeric) %>% 
@@ -100,19 +101,23 @@ poke_long %>%
   coord_flip()+
   theme_bw()
 ```
+
 As we can see, there are some extreme cases present in the boxplot. Nevertheless, we cannot treat this extreme cases as outliers due the fact that a pokemon with extreme values in one variable can have normal values in other variables.
 
 We know that there are two groups in our dataset, as we have the variable `Legendary` which indicates if a pokemon has that quality. It is also known that legendary pokemon have higher values for their statistics than standard ones, but we might want to check if it is true.
 
 A way we can verify this statement is by looking at a scatter plot matrix and the density of our variables when separated by this categorical variable.
+
 ```{r, cache=TRUE, dependson="poke", message = F}
 numeric_vars <- poke_long %>% 
   select_if(~is.numeric(.) || is.logical(.))
 ggpairs(numeric_vars, aes(color = Legendary))
 ```
+
 Indeed, legendary pokemon seem to have higher values for their variables in general than normal pokemon. This means that we will have to treat legendary pokemon separately for our outlier detection, as otherwise they will be found to be outliers (when they are really just a different group).
 
 We can also see the difference between legendary and normal pokemon in a parallel coordinates plot.
+
 ```{r, fig.height = 3, cache = T, dependson = "poke"}
 ggparcoord(numeric_vars, groupColumn = "Legendary")+
   theme_bw()
@@ -123,10 +128,13 @@ We can see that legendary pokemon indeed have in general higher values for their
 as <- bind_cols(numeric_vars, Generation= poke_long$Generation)
 ggparcoord(as, columns = 1:7, groupColumn = "Generation") + theme_bw()
 ```
+
 We can see that, unlike in the case of legendary pokemon, there does not appear to be any particular generation that stands out among the rest of them.
 
 ## Outlier Detection
+
 In order to check if there are any outliers in our dataset we will first remove the legendary pokemon from consideration. After this, we will employ the false False Discovey Rate Method to check for outliers among the remaining pokemon.
+
 ```{r}
 poke_x <- poke_long %>%
   filter(Legendary == 0) %>% 
@@ -136,7 +144,9 @@ p <- ncol(poke_x)
 mah_poke <- mahalanobis(poke_x, colMeans(poke_x), cov(poke_x))
 plot(sort(mah_poke), main = "Mahalanobis Distance", xlab = "", ylab = "")
 ```
+
 The extreme cases in the right side can be outliers. In order to check that, we can compute the outliers using the $\chi^2$ distribution test:
+
 ```{r}
 p_values <- 1 - pchisq(mah_poke, p)
 sort_index <- order(p_values)
@@ -147,6 +157,7 @@ poke_long[outliers_index, ] %>%
 ```
 
 As there are indeed some outliers, we can try to compute the Mahalanobis distance again using the robust estimators for the sample covariance matrix.
+
 ```{r}
 mcd_poke <- covMcd(poke_x, alpha = .9)
 mah_robust <- mahalanobis(poke_x, mcd_poke$center, mcd_poke$cov)
@@ -155,6 +166,7 @@ plot(sort(mah_robust), main = "Mahalanobis Distance (Robust Estimate)", xlab = "
 ```
 
 And for the calculation of p-values and detection of outliers:
+
 ```{r}
 p_values_robust <- 1 - pchisq(mah_robust, p)
 sort_index_robust <- order(p_values_robust)
@@ -163,6 +175,7 @@ outliers_index_robust <-
 
 poke_long[outliers_index, ] %>% dplyr::select(Name)
 ```
+
 We will not be removing these data points, as they are completely fine pokemon, but we will have to make sure that we are using robust estimators in our analyses.
 
 # Principal Component Analysis
@@ -174,14 +187,17 @@ poke_numeric <- select_if(poke, is.numeric)
 pca <- prcomp(poke_numeric)
 fviz_eig(pca, ncp = 12)
 ```
+
 The shape of this plot seems a little fishy, as it seems that principal components explain the variance of our dataset in pairs. To get an insight into why, we can check the correlation plot for our numerical variables:
 
 ```{r}
 corrplot(cor(poke_numeric))
 ```
+
 Here we can see that the variables related to the two different pokemon in the fight are completely uncorrelated. This does make sense considering the dataset, but unfortunately it makes it so that the principal components that we would obtain from this dataset come in pairs (as each of the pairs could be explaining variability in each of the pokemon).
 
 We can see that this is the case by plotting the weights of the first two principal components:
+
 ```{r, message = F, echo = F}
 ggplot(as.data.frame(pca$rotation[,1:2]), 
        aes(x=0,y=0,
@@ -195,6 +211,7 @@ ggplot(as.data.frame(pca$rotation[,1:2]),
 ```
 
 In order to perform a proper analysis, we have transformed the dataset so that we only take into account the variables for one pokemon, although this does make it so that our dataset does not have many variables unfortunately.
+
 ```{r}
 poke_numeric <- select_if(poke_long, is.numeric) 
 pca <- prcomp(poke_numeric)
@@ -202,6 +219,7 @@ fviz_eig(pca, ncp = 12)
 ```
 
 We can plot the weights of the first three principal components to get some insight into our data.
+
 ```{r}
 pca_weights <- as_tibble(pca$rotation, rownames = "variable")
 ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC1))+
@@ -209,6 +227,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC1))+
   geom_label_repel(aes(label = variable))+
   geom_hline(yintercept=0)
 ```
+
 We can see that the weights are all quite high in general, so perhaps this component just explains the general "power level" of a pokemon for instance.
 
 ```{r}
@@ -217,6 +236,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
   geom_label_repel(aes(label = variable))+
   geom_hline(yintercept=0)
 ```
+
 For this second principal component we have that the weights for `Sp.Atk` and `Speed` are higher, so this might be related to the special offensive capabilities of the pokemon in some sense.
 
 ```{r}
@@ -225,6 +245,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC3))+
   geom_label_repel(aes(label = variable))+
   geom_hline(yintercept=0)
 ```
+
 For this last PC, as the highest weight is related to the variable `Attack` this probably is related to the physical attack capabilities of the pokemon, as `Sp.Atk` and `Sp.Def` are related to non-physical combat type.
 
 ```{r, warning=F, message = F}
@@ -240,15 +261,18 @@ ggplot(as.data.frame(pca$rotation[,1:2]),
 ```
 
 # Factor Analysis
+
 As we have seen in the previous section, we will limit our analysis to the variables of just one pokemon. We can first check the correlation between these variables by using again a correlation plot.
 
 ```{r}
 poke_numeric <- select_if(poke_long, is.numeric)
 corrplot(cor(poke_numeric), order = "hclust")
 ```
+
 Unfortunately as there are not that many variables the correlation plot is not useful in order to if there are any groups present in the dataset. However one thing we can see that `Defense` and `Speed` are completely uncorrelated.
 
 We can now calculate the $M$ matrix for the first 2 principal components, as we have only 6 variables so it does not make much sense to compute a lot of factors.
+
 ```{r}
 poke_scaled <- scale(poke_numeric)
 pca_factor <- prcomp(poke_scaled)
@@ -265,6 +289,7 @@ plot(1:p,M[,1],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights fo
 abline(h=0)
 text(1:p,M[,1],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
 ```
+
 This factor has high weight for both `Defense` and `Sp.Def` as well as for `Attack`, `HP` and `Sp.Atk`. A possible interpretation of this latent variable is that it explains the general combat effectiveness of the pokemon, regardless of speed. A high value for this latent variable would mean for example that a pokemon would last longer in combat.
 
 ```{r}
@@ -272,16 +297,20 @@ plot(1:p,M[,2],pch=19,col="deepskyblue2",xlab="",ylab="Weights",main="Weights fo
 abline(h=0)
 text(1:p,M[,2],labels=names(poke_numeric),pos = 1,col="firebrick2",cex=0.75)
 ```
+
 This factor has high (negative) weights for `Speed` and and other related offensive variables. A possible interpretation for this factor is the "slowness" of the pokemon.
 
 ### Commonalities and Uniqueness
+
 We can compute the commonalities to see how well each variable is explained by the factors:
+
 ```{r}
 comm <- diag(M %*% t(M))
 sort(comm, decreasing = T)
 ```
 
 The estimate of the covariance matrix of the errors is given by the following formula, which we will then use to compute the uniqueness of our variables. This will give us an estimate of the unexplained variance present in them.
+
 ```{r}
 sigma_nu <- diag(diag(cov(poke_scaled) - M %*% t(M)))
 uniq <- diag(sigma_nu)
@@ -298,11 +327,13 @@ We will explore the results of the different cluster analysiss techniques seen i
 ## K-Means Clustering
 
 The first technique we will explore is k-means clustering. 
+
 ```{r}
 kmeans_poke <- kmeans(poke_numeric, centers = 2)
 ```
 
 We can plot the first two principal components divided by clusters:
+
 ```{r}
 pca_poke <- prcomp(poke_numeric)
 as_tibble(pca_poke$x[,1:2]) %>% 
@@ -314,16 +345,19 @@ as_tibble(pca_poke$x[,1:2]) %>%
 For this dataset we had that the first PC explained something relative to the general power level of the pokemon, so a possible interpretation of this split is that the algorithm is a assigning one cluster to "weak" pokemon and another to "strong" pokemon in some general sense.
 
 However having 2 clusters might not be the optimal split for our dataset. We can plot the `withinss` metric for several choices of $k$ to see which one is most appropiate.
+
 ```{r}
 fviz_nbclust(poke_numeric, kmeans, method = "wss", k.max = 10)
 ```
 
 There appears to be an elbow around the $k=3$ or $k=4$, which suggests that these two could be used as an appropiate number of clusters. We can also use the silhouette method to get further confirmation for $k$.
+
 ```{r}
 fviz_nbclust(poke_numeric, kmeans, method = "silhouette", k.max = 10)
 ```
 
 So actually the silhoutte method suggest that we take $k=2$, which was what we had donde previously. This certainly makes for an easier interpretation of the cluster, but we can check how the dataset looks with $k=3$ to see whether we get some relevant information.
+
 ```{r}
 kmeans_poke3 <- kmeans(poke_numeric, centers = 3)
 pca_poke <- prcomp(poke_numeric)
@@ -347,6 +381,7 @@ Interesting to note is that most observations have a silhoutte close to 0, which
 ## Partitioning Around Medioids (PAM)
 
 We know that the k-means algorithm is quite sensitive to outliers, as it makes use of the sample mean vector. One solution for this problem is to use an algorithm that does not do clustering using the means but the *medioids* of the groups. The most common algorithm for doing this is the PAM algorithm.
+
 ```{r}
 pam_poke <- pam(poke_numeric, k=3, metric="euclidean", stand=FALSE)
 fviz_cluster(pam_poke, data = pca_poke$x[,1:2], geom = "point")
@@ -379,6 +414,7 @@ A different approach to clustering, where starting from a cluster per single obs
 Single Linkage selects the cluster by taking into consideration the minimum distance (Gower/Manhattan) to any observation of another cluster. That is, ignores the global distance of such cluster and measures single observations, producing huge clusters.
 
 Since the dendogram is not useful given the number of observations we represent the first two components of our PCA using the number of clusters previously defined $k=3$. Being the result a clustering completely unbalanced
+
 ```{r}
 poke_dists <- daisy(poke_numeric,metric="manhattan",stand=FALSE)
 
@@ -386,19 +422,25 @@ single <- hclust(poke_dists,method="single")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 ```
+
 Complete Linkage on the contrary takes into account the maximum distance of the observations of the cluster to which it is being compared. Again we plot the first two principal components, improving the single linkage clustering but still not being properly defined.
+
 ```{r}
 single <- hclust(poke_dists,method="complete")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 ```
+
 The average linkage takes into consideration the mean distance (Manhattan) of the clusters. Still the result is not optimal.
+
 ```{r}
 single <- hclust(poke_dists,method="average")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 ```
+
 Ward Linkage again uses the squared Euclidean distance between the sample mean vector of the clusters. Producing a result closer to the one provided by kmeans and a better result in this case than the other types of linkage.
+
 ```{r}
 single <- hclust(poke_dists,method="ward.D2")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
@@ -415,7 +457,9 @@ diana_poke <- diana(poke_numeric,metric="manhattan")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(diana_poke,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 ```
+
 Suggesting that a smaller number of clusters could improve the division. However, it worsens the result.
+
 ```{r}
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(diana_poke,2)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
@@ -423,6 +467,7 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 
 Changing the distance used to euclidean provides us with a better and optimal result, again using $k=3$.
+
 ```{r}
 diana_poke <- diana(poke_numeric,metric="euclidean")
 
@@ -432,3 +477,9 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 
 ## Model-Based Clustering
+
+```{r}
+library(mclust)
+
+
+```
