@@ -12,7 +12,7 @@ output:
   pdf_document
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
+knitr::opts_chunk$set(echo = FALSE,
                       comment = NA,
                       dev = 'png',
                       dpi = 300)
@@ -289,3 +289,48 @@ sort(uniq, decreasing=TRUE)
 ```
 
 We see that the better explained variables by the factors are `Speed` and `Defense`, while the worst ones are `HP` and `Attack`.
+
+# Cluster Analysis
+
+We will explore the results of the different cluster analysiss techniques seen in class on our dataset. We will use not the original dataset but the variables just related to one pokemon (because of the problems with using the full dataset seen in the previous section).
+
+## K-Means Clustering
+
+The first technique we will explore is k-means clustering. 
+```{r}
+kmeans_poke <- kmeans(poke_numeric, centers = 2)
+```
+
+We can plot the first two principal components divided by clusters:
+```{r}
+pca_poke <- prcomp(poke_numeric)
+as_tibble(pca_poke$x[,1:2]) %>% 
+  bind_cols(cluster = factor(kmeans_poke$cluster)) %>% 
+  ggplot(aes(PC1,PC2, color = cluster))+
+  geom_point()
+```
+
+For this dataset we had that the first PC explained something relative to the general power level of the pokemon, so a possible interpretation of this split is that the algorithm is a assigning one cluster to "weak" pokemon and another to "strong" pokemon in some general sense.
+
+However having 2 clusters might not be the optimal split for our dataset. We can plot the `withinss` metric for several choices of $k$ to see which one is most appropiate.
+```{r}
+fviz_nbclust(poke_numeric, kmeans, method = "wss", k.max = 10)
+```
+
+There appears to be an elbow around the $k=3$ or $k=4$, which suggests that these two could be used as an appropiate number of clusters. We can also use the silhouette method to get further confirmation for $k$.
+```{r}
+fviz_nbclust(poke_numeric, kmeans, method = "silhouette", k.max = 10)
+```
+
+So actually the silhoutte method suggest that we take $k=2$, which was what we had donde previously. This certainly makes for an easier interpretation of the cluster, but we can check how the dataset looks with $k=3$ to see whether we get some relevant information.
+```{r}
+kmeans_poke3 <- kmeans(poke_numeric, centers = 3)
+pca_poke <- prcomp(poke_numeric)
+as_tibble(pca_poke$x[,1:2]) %>% 
+  bind_cols(cluster = factor(kmeans_poke3$cluster)) %>% 
+  ggplot(aes(PC1,PC2, color = cluster))+
+  geom_point()
+```
+
+So we can see that adding another cluster gives us some differences related to the second principal component, as it splits the dataset vertically. The second principal component of our dataset was related to the offensive capabilities of the pokemon, so the clustering algorithm could be distinguishing, among the stronger pokemon, those that are stronger offenseively from those that are stronger deffensively.
+
