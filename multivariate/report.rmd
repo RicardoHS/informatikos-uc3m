@@ -376,20 +376,31 @@ The average silhoutte for this case is `r mean(sil_pam_manh[,"sil_width"]) %>% r
 
 A different approach to clustering, where starting from a cluster per single observation it progressively merges to a single cluster with all observations by selecting the closest cluster. Therefore, it is heavily influenced by the used distance.
 
-Single Linkage selects the cluster by taking into consideration the minimum length to any observation of another cluster. That is, ignores the global distance of such cluster and measures single observations, producing huge clusters.
+Single Linkage selects the cluster by taking into consideration the minimum distance (Gower/Manhattan) to any observation of another cluster. That is, ignores the global distance of such cluster and measures single observations, producing huge clusters.
 
-When applying Single Linkage to our data we see, using a dendogram (not useful when the number of observations is high), how the clustering procedure is done and how unbalanced the result is using the previous number of clusters $k=3$.
+Since the dendogram is not useful given the number of observations we represent the first two components of our PCA using the number of clusters previously defined $k=3$. Being the result a clustering completely unbalanced
 ```{r}
 poke_dists <- daisy(poke_numeric,metric="manhattan",stand=FALSE)
+
 single <- hclust(poke_dists,method="single")
-
-plot(single,main="Single linkage",cex=0.8)
-rect.hclust(single,k=3,border="deepskyblue2")
-```
-
-As a result, when plotting the first two components of our PCA using these clusters the result is completely unbalanced.
-```{r}
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 ```
-
+Complete Linkage on the contrary takes into account the maximum distance of the observations of the cluster to which it is being compared. Again we plot the first two principal components, improving the single linkage clustering but still not being properly defined.
+```{r}
+single <- hclust(poke_dists,method="complete")
+colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
+plot(pca_poke$x[,1:2],pch=20,col=colours_single)
+```
+The average linkage takes into consideration the mean distance (Manhattan) of the clusters. Still the result is not optimal.
+```{r}
+single <- hclust(poke_dists,method="average")
+colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
+plot(pca_poke$x[,1:2],pch=20,col=colours_single)
+```
+Ward Linkage again uses the squared Euclidean distance between the sample mean vector of the clusters. Producing a result closer to the one provided by kmeans and a better result in this case than the other types of linkage.
+```{r}
+single <- hclust(poke_dists,method="ward.D2")
+colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
+plot(pca_poke$x[,1:2],pch=20,col=colours_single)
+```
