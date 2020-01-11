@@ -27,6 +27,7 @@ library(ggrepel)
 library(robustbase)
 library(cowplot)
 library(cluster)
+library(mclust)
 theme_set(theme_bw())
 ```
 
@@ -478,17 +479,15 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 ## Model-Based Clustering
 
-Now we are going to perform a model-based approach. First, we need to compute the BIC.
+Now we are going to perform a model-based approach. This technique try to fit a mixture of gaussians into the data. The number of gaussians and the shape of them are need to be guessed. First, we need to compute the BIC for all the possible models, there is a function that perform this automatically.
 
 ```{r}
-library(mclust)
-
 bic = mclustBIC(poke_numeric,G=1:9)
 
 plot(bic)
 ```
 
-The best possible model is the VVE with 4 components. This model correspond to the `ellipsoidal, equal orientation`. We can automatically compute it.
+The best possible model is the VVE with 4 components. This model correspond to the `ellipsoidal, equal orientation`. We can automatically compute it and plot it.
 
 ```{r}
 model.cluster <- Mclust(poke_numeric,x=bic)
@@ -497,7 +496,7 @@ colors <- c("deepskyblue2","firebrick2","orange")[model.cluster$classification]
 plot(pca_poke$x[,1:2],pch=20,col=colors)
 ```
 
-
+As we can observe, the data does not look fitted very well. Nevertheless, from the previous plot, we can see that almost all types of mixtures behave similar when three components are present, so we can conclude that this kind of clustering does not behave well for this kind of data.
 
 
 
