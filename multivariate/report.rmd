@@ -26,6 +26,7 @@ library(factoextra)
 library(ggrepel)
 library(robustbase)
 library(cowplot)
+library(cluster)
 theme_set(theme_bw())
 ```
 
@@ -334,3 +335,39 @@ as_tibble(pca_poke$x[,1:2]) %>%
 
 So we can see that adding another cluster gives us some differences related to the second principal component, as it splits the dataset vertically. The second principal component of our dataset was related to the offensive capabilities of the pokemon, so the clustering algorithm could be distinguishing, among the stronger pokemon, those that are stronger offenseively from those that are stronger deffensively.
 
+The silhouette plot for this case is
+
+```{r}
+sil_kmeans3 <- silhouette(kmeans_poke3$cluster, dist(poke_numeric, method = "euclidean"))
+plot(sil_kmeans3, col = "deepskyblue2")
+```
+
+Interesting to note is that most observations have a silhoutte close to 0, which means that they lie between two possible clusters.
+
+## Partitioning Around Medioids (PAM)
+
+We know that the k-means algorithm is quite sensitive to outliers, as it makes use of the sample mean vector. One solution for this problem is to use an algorithm that does not do clustering using the means but the *medioids* of the groups. The most common algorithm for doing this is the PAM algorithm.
+```{r}
+pam_poke <- pam(poke_numeric, k=3, metric="euclidean", stand=FALSE)
+fviz_cluster(pam_poke, data = pca_poke$x[,1:2], geom = "point")
+```
+
+We can see that the clusters in this case are mostly split along the first principal component. The silhouette for this case is:
+
+```{r}
+# Creo que no tiene mucho sentido poner estos plots porque los valores para las silhpouettes
+# son tan pequeños que no se ve nada. Es mejor trabajar con la media de los valores y usar
+# eso para comparar los metodos yo creo.
+silhouette(pam_poke$clustering, dist(poke_numeric, method = "euclidean")) %>% plot()
+```
+
+So we can see that the average silhouette width is smaller than with kmeans. We can also try to use PAM clustering with manhattan distance instead of euclidean. In this case we get the following result:
+
+```{r}
+pam_poke_manh <- pam(poke_numeric, k=3, metric="manhattan", stand=FALSE)
+fviz_cluster(pam_poke_manh, data = pca_poke$x[,1:2], geom = "point")
+
+sil_pam_manh <- silhouette(pam_poke_manh$clustering, dist(poke_numeric, method = "manhattan"))
+```
+
+The average silhoutte for this case is `r mean(sil_pam_manh[,"sil_width"]) %>% round(5)`, which is closer to the one in kmeans but still not quite good enough.
