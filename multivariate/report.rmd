@@ -404,3 +404,31 @@ single <- hclust(poke_dists,method="ward.D2")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 ```
+
+## Divisive Hierarchical Clustering
+
+On the contrary to agglomerative clustering divisive clustering starts from a single cluster and progressively divides it until there is a single cluster per observation by splitting the observations with the largest distance. Using manhattan distance with Divisive Analysis Clustering (DIANA) algorithm on our dataset we obtain a non-optimal division (with $k=3$), with a cluster with a single observation.
+
+```{r}
+diana_poke <- diana(poke_numeric,metric="manhattan")
+
+colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(diana_poke,3)]
+plot(pca_poke$x[,1:2],pch=20,col=colours_single)
+```
+Suggesting that a smaller number of clusters could improve the division. However, it worsens the result.
+```{r}
+colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(diana_poke,2)]
+plot(pca_poke$x[,1:2],pch=20,col=colours_single)
+```
+
+
+Changing the distance used to euclidean provides us with a better and optimal result, again using $k=3$.
+```{r}
+diana_poke <- diana(poke_numeric,metric="euclidean")
+
+colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(diana_poke,3)]
+plot(pca_poke$x[,1:2],pch=20,col=colours_single)
+```
+
+
+## Model-Based Clustering
