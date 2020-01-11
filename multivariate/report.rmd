@@ -478,8 +478,33 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 ## Model-Based Clustering
 
+Now we are going to perform a model-based approach. First, we need to compute the BIC.
+
 ```{r}
 library(mclust)
 
+bic = mclustBIC(poke_numeric,G=1:9)
 
+plot(bic)
 ```
+
+The best possible model is the VVE with 4 components. This model correspond to the `ellipsoidal, equal orientation`. We can automatically compute it.
+
+```{r}
+model.cluster <- Mclust(poke_numeric,x=bic)
+
+colors <- c("deepskyblue2","firebrick2","orange")[model.cluster$classification]
+plot(pca_poke$x[,1:2],pch=20,col=colors)
+```
+
+
+
+
+
+
+
+
+
+
+
+
