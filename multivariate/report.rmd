@@ -3,7 +3,7 @@ title: "Statistics for Data Science - UC3M Master"
 subtitle: "Multivariate Analysis - First Assignment"
 author: 
   - "Ricardo Hortelano"
-  - "Javier Martinez"
+  - "Javier Martínez"
   - "Santiago Raposo"
 header-includes:
    - \usepackage{amsmath}
@@ -61,7 +61,7 @@ For some of our plots and exploratory analysis, we are only interested in the di
 #### Density Plots
 First we can see some density plots of our numerical variables to get some insight into their shape:
 
-```{r}
+```{r fig.height=3}
 poke_long %>% 
   select_if(is.numeric) %>% 
   pivot_longer(
@@ -78,7 +78,7 @@ poke_long %>%
 
 We can also try to get some insight into the distribution of our numerical variables over the values of our categorical variables by plotting some bar charts.
 
-```{r}
+```{r fig.height=3}
 poke_long %>% 
   ggplot(aes(x = Generation))+
   geom_bar()+
@@ -89,7 +89,7 @@ We can see that the distribution of the generations of pokemon is not uniform, w
 
 We can also look at a boxplot of our variables to get some more insight into their distributions, as well as letting us see wheter there are any outliers in our data.
 
-```{r, cache = TRUE, dependson="poke", dev = "png", dpi = 300}
+```{r, cache = TRUE, dependson="poke", dev = "png", dpi = 300, fig.height=3.75}
 poke_long %>% 
   select_if(is.numeric) %>% 
   pivot_longer(
@@ -189,7 +189,7 @@ pca <- prcomp(poke_numeric)
 fviz_eig(pca, ncp = 12)
 ```
 
-The shape of this plot seems a little fishy, as it seems that principal components explain the variance of our dataset in pairs. To get an insight into why, we can check the correlation plot for our numerical variables:
+The shape of this plot seems odd, as it seems that principal components explain the variance of our dataset in pairs. To understand why, we can check the correlation plot for our numerical variables:
 
 ```{r}
 corrplot(cor(poke_numeric))
@@ -213,7 +213,7 @@ ggplot(as.data.frame(pca$rotation[,1:2]),
 
 In order to perform a proper analysis, we have transformed the dataset so that we only take into account the variables for one pokemon, although this does make it so that our dataset does not have many variables unfortunately.
 
-```{r}
+```{r fig.height=3.5}
 poke_numeric <- select_if(poke_long, is.numeric) 
 pca <- prcomp(poke_numeric)
 fviz_eig(pca, ncp = 12)
@@ -223,7 +223,7 @@ Note that we are not scaling our data before calculating the principal component
 
 We can then proceed with the plots for the first three principal components so that we can assign some meaning into the obtained variables. This will not only help us interpret the meaning of the different principal components but will also be relevant when we perform cluster analysis later on in the report.
 
-```{r}
+```{r fig.height=3.5}
 pca_weights <- as_tibble(pca$rotation, rownames = "variable")
 ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC1))+
   geom_point()+
@@ -233,7 +233,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC1))+
 
 We can see that the weights are all quite high in general, so perhaps this component just explains the general "power level" of a pokemon for instance.
 
-```{r}
+```{r fig.height=3.5}
 ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
   geom_point()+
   geom_label_repel(aes(label = variable))+
@@ -242,7 +242,7 @@ ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC2))+
 
 For this second principal component we have that the weights for `Sp.Atk` and `Speed` are higher, so this might be related to the special offensive capabilities of the pokemon in some sense.
 
-```{r}
+```{r fig.height=3.5}
 ggplot(pca_weights, aes(x = 1:nrow(pca_weights), y = PC3))+
   geom_point()+
   geom_label_repel(aes(label = variable))+
@@ -417,7 +417,7 @@ Single Linkage selects the cluster by taking into consideration the minimum dist
 
 Since the dendogram is not useful given the number of observations we represent the first two components of our PCA using the number of clusters previously defined $k=3$. Being the result a clustering completely unbalanced
 
-```{r}
+```{r fig.height=3}
 poke_dists <- daisy(poke_numeric,metric="manhattan",stand=FALSE)
 
 single <- hclust(poke_dists,method="single")
@@ -427,7 +427,7 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 Complete Linkage on the contrary takes into account the maximum distance of the observations of the cluster to which it is being compared. Again we plot the first two principal components, improving the single linkage clustering but still not being properly defined.
 
-```{r}
+```{r fig.height=3}
 single <- hclust(poke_dists,method="complete")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
@@ -435,7 +435,7 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 The average linkage takes into consideration the mean distance (Manhattan) of the clusters. Still the result is not optimal.
 
-```{r}
+```{r fig.height=3}
 single <- hclust(poke_dists,method="average")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
@@ -443,7 +443,7 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 Ward Linkage again uses the squared Euclidean distance between the sample mean vector of the clusters. Producing a result closer to the one provided by kmeans and a better result in this case than the other types of linkage.
 
-```{r}
+```{r fig.height=3}
 single <- hclust(poke_dists,method="ward.D2")
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(single,3)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
@@ -453,7 +453,7 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 On the contrary to agglomerative clustering divisive clustering starts from a single cluster and progressively divides it until there is a single cluster per observation by splitting the observations with the largest distance. Using manhattan distance with Divisive Analysis Clustering (DIANA) algorithm on our dataset we obtain a non-optimal division (with $k=3$), with a cluster with a single observation.
 
-```{r}
+```{r fig.height=3}
 diana_poke <- diana(poke_numeric,metric="manhattan")
 
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(diana_poke,3)]
@@ -462,7 +462,7 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 Suggesting that a smaller number of clusters could improve the division. However, it worsens the result.
 
-```{r}
+```{r fig.height=3}
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(diana_poke,2)]
 plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 ```
@@ -470,7 +470,7 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 Changing the distance used to euclidean provides us with a better and optimal result, again using $k=3$.
 
-```{r}
+```{r fig.height=3}
 diana_poke <- diana(poke_numeric,metric="euclidean")
 
 colours_single <- c("deepskyblue2","firebrick2","orange")[cutree(diana_poke,3)]
