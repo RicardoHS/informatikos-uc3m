@@ -85,9 +85,9 @@ poke_long %>%
   theme_bw()
 ```
 
-We can see that the distribution of the generations of pokemon is not uniform, which might affect the amount of wins for each generation in the fights. We can also check the distribution of the legendary pokemon in our data.
+We can see that the distribution of the generations of pokemon is not uniform, which might affect the amount of wins for each generation in the fights.
 
-We can also look at a boxplot of our variables to get some more insight into their distributions, as well as letting us see wheter there are any outliers in our data.
+In order to get some more insight into their distributions, we can also look at a boxplot of our variables, as well as letting us see wheter there are any outliers in our data.
 
 ```{r, cache = TRUE, dependson="poke", dev = "png", dpi = 300}
 poke_long %>% 
