@@ -499,12 +499,15 @@ plot(pca_poke$x[,1:2],pch=20,col=colors)
 
 As we can observe, the data does not look fitted very well. Nevertheless, from the previous plot, we can see that almost all types of mixtures behave similar when three components are present, so we can conclude that this kind of clustering does not behave well for our dataset.
 
+## Conclusions
 
+Overall the best performing cluster method appears to be k-means clustering with $k=3$. The cluster assignments visualized on the first two principal components was the following: 
 
+```{r, fig.height = 3}
+as_tibble(pca_poke$x[,1:2]) %>% 
+  bind_cols(cluster = factor(kmeans_poke3$cluster)) %>% 
+  ggplot(aes(PC1,PC2, color = cluster))+
+  geom_point()
+```
 
-
-
-
-
-
-
+The clusters for this algorithm appear to be the most well separated, both visually and using the silhouette metric. However it is true that the principal component plot does not show evidence of there being any obvious clusters.
