@@ -14,8 +14,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       comment = NA,
-                      dev = 'png',
-                      dpi = 300)
+                      fig.height = 4,
+                      fig.align = "center")
 library(plotly)
 library(tidyverse)
 library(MASS)
@@ -89,7 +89,7 @@ We can see that the distribution of the generations of pokemon is not uniform, w
 
 We can also look at a boxplot of our variables to get some more insight into their distributions, as well as letting us see wheter there are any outliers in our data.
 
-```{r, cache = TRUE, dependson="poke"}
+```{r, cache = TRUE, dependson="poke", dev = "png", dpi = 300}
 poke_long %>% 
   select_if(is.numeric) %>% 
   pivot_longer(
@@ -136,7 +136,7 @@ We can see that, unlike in the case of legendary pokemon, there does not appear 
 
 In order to check if there are any outliers in our dataset we will first remove the legendary pokemon from consideration. After this, we will employ the false False Discovey Rate Method to check for outliers among the remaining pokemon.
 
-```{r}
+```{r, dev = "png", dpi = 300}
 poke_x <- poke_long %>%
   filter(Legendary == 0) %>% 
   select_if(is.numeric)
@@ -159,7 +159,7 @@ poke_long[outliers_index, ] %>%
 
 As there are indeed some outliers, we can try to compute the Mahalanobis distance again using the robust estimators for the sample covariance matrix.
 
-```{r}
+```{r, dev  = "png", dpi = 300}
 mcd_poke <- covMcd(poke_x, alpha = .9)
 mah_robust <- mahalanobis(poke_x, mcd_poke$center, mcd_poke$cov)
 
@@ -265,7 +265,7 @@ ggplot(as.data.frame(pca$rotation[,1:2]),
 
 As we have seen in the previous section, we will limit our analysis to the variables of just one pokemon. We can first check the correlation between these variables by using again a correlation plot.
 
-```{r}
+```{r, fig.height = 3, dev = "pdf", fig.align="center"}
 poke_numeric <- select_if(poke_long, is.numeric)
 corrplot(cor(poke_numeric), order = "hclust")
 ```
@@ -335,7 +335,7 @@ kmeans_poke <- kmeans(poke_numeric, centers = 2)
 
 We can plot the first two principal components divided by clusters:
 
-```{r}
+```{r, fig.height = 3}
 pca_poke <- prcomp(poke_numeric)
 as_tibble(pca_poke$x[,1:2]) %>% 
   bind_cols(cluster = factor(kmeans_poke$cluster)) %>% 
@@ -347,19 +347,19 @@ For this dataset we had that the first PC explained something relative to the ge
 
 However having 2 clusters might not be the optimal split for our dataset. We can plot the `withinss` metric for several choices of $k$ to see which one is most appropiate.
 
-```{r}
+```{r, fig.height=3}
 fviz_nbclust(poke_numeric, kmeans, method = "wss", k.max = 10)
 ```
 
 There appears to be an elbow around the $k=3$ or $k=4$, which suggests that these two could be used as an appropiate number of clusters. We can also use the silhouette method to get further confirmation for $k$.
 
-```{r}
+```{r, fig.height=3}
 fviz_nbclust(poke_numeric, kmeans, method = "silhouette", k.max = 10)
 ```
 
 So actually the silhoutte method suggest that we take $k=2$, which was what we had donde previously. This certainly makes for an easier interpretation of the cluster, but we can check how the dataset looks with $k=3$ to see whether we get some relevant information.
 
-```{r}
+```{r, fig.height=3}
 kmeans_poke3 <- kmeans(poke_numeric, centers = 3)
 pca_poke <- prcomp(poke_numeric)
 as_tibble(pca_poke$x[,1:2]) %>% 
@@ -372,18 +372,18 @@ So we can see that adding another cluster gives us some differences related to t
 
 The silhouette plot for this case is
 
-```{r}
+```{r, fig.height=4}
 sil_kmeans3 <- silhouette(kmeans_poke3$cluster, dist(poke_numeric, method = "euclidean"))
-plot(sil_kmeans3, col = "deepskyblue2")
+plot(sil_kmeans3, col = "deepskyblue2", main = "Silhouette plot for K-Means (k=3)")
 ```
 
-Interesting to note is that most observations have a silhoutte close to 0, which means that they lie between two possible clusters.
+We can see that most observations have a positive silhouette, although there is a small number of them with negative or close to zero values.
 
 ## Partitioning Around Medioids (PAM)
 
 We know that the k-means algorithm is quite sensitive to outliers, as it makes use of the sample mean vector. One solution for this problem is to use an algorithm that does not do clustering using the means but the *medioids* of the groups. The most common algorithm for doing this is the PAM algorithm.
 
-```{r}
+```{r, fig.height=4}
 pam_poke <- pam(poke_numeric, k=3, metric="euclidean", stand=FALSE)
 fviz_cluster(pam_poke, data = pca_poke$x[,1:2], geom = "point")
 ```
@@ -391,19 +391,18 @@ fviz_cluster(pam_poke, data = pca_poke$x[,1:2], geom = "point")
 We can see that the clusters in this case are mostly split along the first principal component. The silhouette for this case is:
 
 ```{r}
-# Creo que no tiene mucho sentido poner estos plots porque los valores para las silhpouettes
-# son tan pequeños que no se ve nada. Es mejor trabajar con la media de los valores y usar
-# eso para comparar los metodos yo creo.
-silhouette(pam_poke$clustering, dist(poke_numeric, method = "euclidean")) %>% plot()
+silhouette(pam_poke$clustering, dist(poke_numeric, method = "euclidean")) %>% 
+  plot(main = "Silhouette plot for PAM (k=3)", col = "deepskyblue2")
 ```
 
-So we can see that the average silhouette width is smaller than with kmeans. We can also try to use PAM clustering with manhattan distance instead of euclidean. In this case we get the following result:
+So we can see that the average silhouette width is smaller than with kmeans. We can also see that the number of observations with a negative silhouette is bigger than in k-means, which indicates a worse fit for this algorithm. One alternative we can take with the PAM algorithm is to use the Manhattan distance instead of euclidean, which gives us the following result:
 
-```{r}
+```{r, fig.height=4}
 pam_poke_manh <- pam(poke_numeric, k=3, metric="manhattan", stand=FALSE)
 fviz_cluster(pam_poke_manh, data = pca_poke$x[,1:2], geom = "point")
 
 sil_pam_manh <- silhouette(pam_poke_manh$clustering, dist(poke_numeric, method = "manhattan"))
+plot(sil_pam_manh, col = "deepskyblue2", main = "Silhouette plot for PAM (Manhattan Distance) (k=3)")
 ```
 
 The average silhoutte for this case is `r mean(sil_pam_manh[,"sil_width"]) %>% round(5)`, which is closer to the one in kmeans but still not quite good enough.
