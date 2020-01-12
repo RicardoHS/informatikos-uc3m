@@ -480,7 +480,7 @@ plot(pca_poke$x[,1:2],pch=20,col=colours_single)
 
 ## Model-Based Clustering
 
-Now we are going to perform a model-based approach. This technique try to fit a mixture of gaussians into the data. The number of gaussians and the shape of them are need to be guessed. First, we need to compute the BIC for all the possible models, there is a function that perform this automatically.
+Now we are going to perform a model-based approach. This technique attempts to fit a mixture of gaussians to our data. The number of gaussians and their shape have to be guessed, but we can compute the BIC for all the possible models to aid us in choosing the most appropiate configuration. There is a function that perform this process automatically.
 
 ```{r}
 bic = mclustBIC(poke_numeric,G=1:9)
@@ -497,7 +497,7 @@ colors <- c("deepskyblue2","firebrick2","orange")[model.cluster$classification]
 plot(pca_poke$x[,1:2],pch=20,col=colors)
 ```
 
-As we can observe, the data does not look fitted very well. Nevertheless, from the previous plot, we can see that almost all types of mixtures behave similar when three components are present, so we can conclude that this kind of clustering does not behave well for this kind of data.
+As we can observe, the data does not look fitted very well. Nevertheless, from the previous plot, we can see that almost all types of mixtures behave similar when three components are present, so we can conclude that this kind of clustering does not behave well for our dataset.
 
 
 
