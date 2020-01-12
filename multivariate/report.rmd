@@ -381,6 +381,8 @@ plot(sil_kmeans3, col = "deepskyblue2", main = "Silhouette plot for K-Means (k=3
 
 We can see that most observations have a positive silhouette, although there is a small number of them with negative or close to zero values.
 
+We can then compare the silhouettes for both the $k=2$ and $k=3$ methods
+
 ## Partitioning Around Medioids (PAM)
 
 We know that the k-means algorithm is quite sensitive to outliers, as it makes use of the sample mean vector. One solution for this problem is to use an algorithm that does not do clustering using the means but the *medioids* of the groups. The most common algorithm for doing this is the PAM algorithm.
@@ -501,13 +503,22 @@ As we can observe, the data does not look fitted very well. Nevertheless, from t
 
 ## Conclusions
 
-Overall the best performing cluster method appears to be k-means clustering with $k=3$. The cluster assignments visualized on the first two principal components was the following: 
+Overall the best performing cluster method appears to be k-means clustering, but there are possibly two valid choices for $k$, $k=2$ and $k=3$. The cluster assignments for these two are respectively:
 
 ```{r, fig.height = 3}
-as_tibble(pca_poke$x[,1:2]) %>% 
+p1 <- as_tibble(pca_poke$x[,1:2]) %>% 
+  bind_cols(cluster = factor(kmeans_poke$cluster)) %>% 
+  ggplot(aes(PC1,PC2, color = cluster))+
+  geom_point()+
+  theme(legend.position = "bottom")
+p2 <- as_tibble(pca_poke$x[,1:2]) %>% 
   bind_cols(cluster = factor(kmeans_poke3$cluster)) %>% 
   ggplot(aes(PC1,PC2, color = cluster))+
-  geom_point()
+  geom_point()+
+  theme(legend.position = "bottom")
+plot_grid(p1, p2)
 ```
 
-The clusters for this algorithm appear to be the most well separated, both visually and using the silhouette metric. However it is true that the principal component plot does not show evidence of there being any obvious clusters.
+In both cases the clusters are not very well separated, but this is because the plot of the first two principal components does not really show any obvious cluster structure.
+
+The assignment with $k=2$ has a slightly better average silhouette than the plot with $k=3$, but also a slightly worse within cluster sum of squares. Overall we would keep the model where $k=3$, as the division found by the algorithm seems reasonable and it does allow for more interesting insight.
