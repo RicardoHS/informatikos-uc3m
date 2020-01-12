@@ -219,7 +219,9 @@ pca <- prcomp(poke_numeric)
 fviz_eig(pca, ncp = 12)
 ```
 
-We can plot the weights of the first three principal components to get some insight into our data.
+Note that we are not scaling our data before calculating the principal components, which means that we are performing the calculations using the *sample covariance* matrix. This is not a problem in our case as all of our variables have similar magnitudes and variances.
+
+We can then proceed with the plots for the first three principal components so that we can assign some meaning into the obtained variables. This will not only help us interpret the meaning of the different principal components but will also be relevant when we perform cluster analysis later on in the report.
 
 ```{r}
 pca_weights <- as_tibble(pca$rotation, rownames = "variable")
